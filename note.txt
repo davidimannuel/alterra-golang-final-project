@@ -1,0 +1,3 @@
+(KeRe)(productivity app )
+-- auth google/email
+-- send notif with telegram bot (@ke_re_bot)

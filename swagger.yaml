@@ -1,0 +1,343 @@
+swagger: "2.0"
+info:
+  description: "Keep Remind API"
+  version: "1.0.0"
+  title: "Keep Remind"
+  termsOfService: "http://swagger.io/terms/"
+  contact:
+    email: "apiteam@swagger.io"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "keepremind.swagger.io"
+basePath: "/v1"
+tags:
+- name: "labels"
+  description: "Labels API"
+  externalDocs:
+    description: "Find out more"
+    url: "http://swagger.io"
+- name: "notes"
+  description: "Notes API"
+  externalDocs:
+    description: "Find out more"
+    url: "http://swagger.io"
+schemes:
+- "https"
+- "http"
+paths:
+  /labels:
+    get:
+      security:
+        - JWT: []
+      tags:
+        - "labels"
+      description: "list all labels"
+      produces:
+      - "application/json"
+      parameters:
+        - in: query
+          name: search
+          type: string
+          description: "search param"
+      responses:
+        "200":
+          description: "successfuly get data"
+          schema:
+            type: "array"
+            items: 
+              $ref: "#/definitions/Label"
+        "500":
+          description: "internal server error"
+      deprecated: false
+    post:
+      tags:
+        - "labels"
+      description: "add label"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+        - in: body
+          name: body
+          description: "Label object that needs to be added to the store"
+          required: true
+          schema:
+            type: object
+            properties: 
+              name:
+                  type: string
+      responses:
+        "200":
+          description: "successfuly add data"
+        "500":
+          description: "internal server error"
+      deprecated: false
+  /labels/{labelId}:
+    get:
+      tags:
+        - "labels"
+      description: "get labels by id"
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "successfuly get data"
+          schema:
+              $ref: "#/definitions/Label"
+        "400":
+          description: "Invalid ID supplied"
+        "404":
+          description: "Label not found"
+        "500":
+          description: "internal server error"
+      deprecated: false
+    put:
+      tags:
+        - "labels"
+      description: "edit label"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+        - in: body
+          name: body
+          description: "Label object that needs to be added to the store"
+          required: true
+          schema:
+            type: object
+            properties: 
+              name:
+                  type: string
+      responses:
+        "200":
+          description: "successfuly edit data"
+        "400":
+          description: "Invalid ID supplied"
+        "404":
+          description: "Note not found"
+        "500":
+          description: "internal server error"
+      deprecated: false
+    delete:
+      tags:
+        - "labels"
+      description: "delete note"
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "successfuly delete data"
+        "400":
+          description: "Invalid ID supplied"
+        "404":
+          description: "Note not found"
+        "500":
+          description: "internal server error"
+      deprecated: false
+  /notes:
+    get:
+      tags:
+        - "notes"
+      description: "list all notes"
+      produces:
+      - "application/json"
+      parameters:
+        - in: query
+          name: search
+          type: string
+          description: "search param"
+      responses:
+        "200":
+          description: "successfuly get data"
+          schema:
+            type: "array"
+            items: 
+              $ref: "#/definitions/Note"
+        "500":
+          description: "internal server error"
+      deprecated: false
+    post:
+      tags:
+        - "notes"
+      description: "add note"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+        - in: body
+          name: body
+          description: "Note object that needs to be added to the store"
+          required: true
+          schema:
+            type: object
+            properties: 
+              title:
+                  type: string
+              note:
+                  type: string
+              reminder_at:
+                  type: string
+                  format: date-time
+      responses:
+        "200":
+          description: "successfuly add data"
+        "500":
+          description: "internal server error"
+      deprecated: false
+  /notes/{noteId}:
+    get:
+      tags:
+        - "notes"
+      description: "get notes by id"
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "successfuly get data"
+          schema:
+              $ref: "#/definitions/Note"
+        "400":
+          description: "Invalid ID supplied"
+        "404":
+          description: "Note not found"
+        "500":
+          description: "internal server error"
+      deprecated: false
+    put:
+      tags:
+        - "notes"
+      description: "edit note"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+        - in: body
+          name: body
+          description: "Note object that needs to be added to the store"
+          required: true
+          schema:
+            type: object
+            properties: 
+              title:
+                  type: string
+              note:
+                  type: string
+              reminder_at:
+                  type: string
+                  format: date-time
+      responses:
+        "200":
+          description: "successfuly edit data"
+        "400":
+          description: "Invalid ID supplied"
+        "404":
+          description: "Note not found"
+        "500":
+          description: "internal server error"
+      deprecated: false
+    delete:
+      tags:
+        - "notes"
+      description: "delete note"
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "successfuly delete data"
+        "400":
+          description: "Invalid ID supplied"
+        "404":
+          description: "Note not found"
+        "500":
+          description: "internal server error"
+      deprecated: false
+securityDefinitions:
+  JWT:  
+    type: apiKey  
+    in: header  
+    name: access_token              
+definitions:
+  "User":
+    type: object
+    required:
+      - "username"
+      - "country_code"
+      - "phone"
+      - "password"
+    properties: 
+      id:
+          type: number
+      username:
+          type: string
+      country_code:
+          type: string
+      phone:
+          type: string
+      password:
+          type: string
+      created_at:
+          type: string
+          format: date-time
+      updated_at:
+          type: string
+          format: date-time
+  "Label":
+    type: object
+    required:
+      - "name"
+    properties: 
+      id:
+          type: number
+      user_id:
+          type: string
+      user:
+        $ref:  "#/definitions/User"
+      name:
+          type: string
+      created_at:
+          type: string
+          format: date-time
+      updated_at:
+          type: string
+          format: date-time
+  "Note":
+    type: object
+    required:
+      - "title"
+      - "note"
+    properties: 
+      id:
+          type: number
+      title:
+          type: string
+      note:
+          type: string
+      reminder_at:
+          type: string
+          format: date-time
+      created_at:
+          type: string
+          format: date-time
+      updated_at:
+          type: string
+          format: date-time
+      labels:
+          type: array
+          items: 
+            $ref:  "#/definitions/Label"
+      participants:
+          type: array
+          items: 
+            type: object
+            properties: 
+              user_id:
+                type: string
+              user:
+                $ref:  "#/definitions/User"
+              is_owner:
+                type: boolean

@@ -1,0 +1,69 @@
+{
+    "openapi":"3.0.2",
+    "info": {
+        "title":"Keep Remind API",
+        "version":"1.0"
+    },
+    "servers": [
+        {"url":"https://api.server.test/v1"}
+    ],
+    "paths": {
+    	"/users" : {
+				"get" :{
+					"description": "List all Users",
+					"responses": {
+						"200": {
+							"description": "success get all users",
+							"content": {
+								"application/json":{
+									"schema":{
+										"type": "object",
+										"properties": {
+											"code":{
+												"type": "number"
+											},
+											"message":{
+												"type": "string"
+											},
+											"data": {
+												"type": "array",
+												"items":{
+													"type": "object",
+													"properties": {
+														"id" :{
+															"type": "number"
+														},
+														"username" :{
+															"type": "string"
+														},
+														"country_code" :{
+															"type": "string"
+														},
+														"phone" :{
+															"type": "string"
+														},
+														"password" :{
+															"type": "string",
+															"format": "password"
+														},
+														"created_at" :{
+															"type": "string",
+															"format": "date-time"
+														},
+														"updated_at" :{
+															"type": "string",
+															"format": "date-time"
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+    }
+}
