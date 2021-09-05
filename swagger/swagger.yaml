@@ -29,7 +29,7 @@ paths:
   /labels:
     get:
       security:
-        - JWT: []
+        - Bearer: []
       tags:
         - "labels"
       description: "list all labels"
@@ -257,10 +257,10 @@ paths:
           description: "internal server error"
       deprecated: false
 securityDefinitions:
-  JWT:  
+  Bearer:  
     type: apiKey  
     in: header  
-    name: access_token              
+    name: Bearer              
 definitions:
   "User":
     type: object
