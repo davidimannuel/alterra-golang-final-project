@@ -1,15 +1,33 @@
 package main
 
 import (
-	"net/http"
+	"fmt"
+	"log"
+
+	"alterra-golang-final-project/config"
+	"alterra-golang-final-project/server/routes"
 
 	"github.com/labstack/echo/v4"
 )
 
 func main() {
+	// read config
+	configs, err := config.LoadConfigs()
+	if err != nil {
+		log.Fatal("Error load config file")
+	}
+	fmt.Println("configs", configs)
+	defer func() {
+		log.Print("defer function")
+	}()
+
+	//init router
 	e := echo.New()
-	e.GET("/test", func(c echo.Context) error {
-		return c.JSON(http.StatusOK, "Work!!")
-	})
-	e.Logger.Fatal(e.Start(":3000"))
+	r := routes.Router{
+		Echo:    e,
+		Configs: configs,
+	}
+	r.RegisterRoute()
+
+	e.Logger.Fatal(r.Echo.Start(configs.AppHost))
 }
