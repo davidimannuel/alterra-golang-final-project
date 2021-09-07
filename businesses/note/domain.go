@@ -1,49 +1,52 @@
 package note
 
-import "context"
+import (
+	"context"
+	"time"
+)
 
-type Entity struct {
-	Id         int     `json:"id"`
-	Title      string  `json:"title"`
-	Note       string  `json:"note"`
-	ReminderAt string  `json:"reminder_at"`
-	CreatedAt  string  `json:"created_at"`
-	UpdatedAt  string  `json:"updated_at"`
-	DeletedAt  *string `json:"deleted_at"`
+type Domain struct {
+	Id         int
+	Title      string
+	Note       string
+	ReminderAt *time.Time
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
+	DeletedAt  *time.Time
 }
 
 type Parameter struct {
-	Id         int     `json:"id"`
-	Title      string  `json:"title"`
-	Note       string  `json:"note"`
-	ReminderAt string  `json:"reminder_at"`
-	CreatedAt  string  `json:"created_at"`
-	UpdatedAt  string  `json:"updated_at"`
-	DeletedAt  *string `json:"deleted_at"`
-	OrderBy    string  `json:"order_by"`
-	Sort       string  `json:"sort"`
-	Offset     int     `json:"offset"`
-	Limit      int     `json:"limit"`
+	Id         int
+	Title      string
+	Note       string
+	ReminderAt string
+	CreatedAt  string
+	UpdatedAt  string
+	DeletedAt  *string
+	OrderBy    string
+	Sort       string
+	Offset     int
+	Limit      int
 }
 
 type Repository interface {
-	FindAll(ctx context.Context, parameter Parameter) (data []Entity, count int, err error)
-	SelectAll(ctx context.Context, parameter Parameter) (data []Entity, err error)
-	FindByID(ctx context.Context, parameter Parameter) (data Entity, err error)
-	FindByTitle(ctx context.Context, parameter Parameter) (data Entity, err error)
-	FindByTitleOrNote(ctx context.Context, parameter Parameter) (data Entity, err error)
-	Create(ctx context.Context, data *Entity) (lastInsertId int, err error)
-	Update(ctx context.Context, data *Entity) (lastUpdateId int, err error)
-	Delete(ctx context.Context, id int) (lastUpdateId int, err error)
+	// FindAll(ctx context.Context, parameter Parameter) ([]Domain, int, error)
+	// SelectAll(ctx context.Context, parameter Parameter) ([]Domain, error)
+	// FindByID(ctx context.Context, parameter Parameter) (Domain, error)
+	// FindByTitle(ctx context.Context, parameter Parameter) (Domain, error)
+	// FindByTitleOrNote(ctx context.Context, parameter Parameter) (Domain, error)
+	Add(ctx context.Context, data *Domain) (Domain, error)
+	// Edit(ctx context.Context, data *Domain) (Domain, error)
+	// Delete(ctx context.Context, id int) (Domain, error)
 }
 
 type Usecase interface {
-	FindAll(ctx context.Context, parameter Parameter) (data []Entity, count int, err error)
-	SelectAll(ctx context.Context, parameter Parameter) (data []Entity, err error)
-	FindByID(ctx context.Context, parameter Parameter) (data Entity, err error)
-	FindByTitle(ctx context.Context, parameter Parameter) (data Entity, err error)
-	FindByTitleOrNote(ctx context.Context, parameter Parameter) (data Entity, err error)
-	Create(ctx context.Context, data *Entity) (lastInsertId int, err error)
-	Update(ctx context.Context, data *Entity) (lastUpdateId int, err error)
-	Delete(ctx context.Context, id int) (lastUpdateId int, err error)
+	// FindAll(ctx context.Context, parameter Parameter) ([]Domain, int, error)
+	// SelectAll(ctx context.Context, parameter Parameter) ([]Domain, error)
+	// FindByID(ctx context.Context, parameter Parameter) (Domain, error)
+	// FindByTitle(ctx context.Context, parameter Parameter) (Domain, error)
+	// FindByTitleOrNote(ctx context.Context, parameter Parameter) (Domain, error)
+	Add(ctx context.Context, data *Domain) (Domain, error)
+	// Edit(ctx context.Context, data *Domain) (Domain, error)
+	// Delete(ctx context.Context, id int) (Domain, error)
 }

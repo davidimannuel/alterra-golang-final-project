@@ -1,11 +1,11 @@
 package postgresql
 
 import (
+	"alterra-golang-final-project/drivers/repositories/note"
 	"fmt"
 	"log"
 
 	"gorm.io/driver/postgres"
-
 	"gorm.io/gorm"
 )
 
@@ -19,16 +19,24 @@ type Config struct {
 
 func (config *Config) InitDB() *gorm.DB {
 	dsn := fmt.Sprintf(
-		"host=%v user=%v password=%v dbname=%v port=%v sslmode=disable TimeZone=Asia/Jakarta",
-		config.DBHost,
+		"postgres://%s:%s@%s:%s/%s?sslmode=disable&TimeZone=UTC",
 		config.DBUsername,
 		config.DBPassword,
-		config.DBName,
+		config.DBHost,
 		config.DBPort,
+		config.DBName,
 	)
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	db, err := gorm.Open(postgres.New(
+		postgres.Config{
+			DSN: dsn,
+		}), &gorm.Config{})
 	if err != nil {
 		log.Fatal("Error database connection")
 	}
+
 	return db
+}
+
+func MigrateDB(db *gorm.DB) {
+	db.AutoMigrate(&note.Note{}) // migrate db
 }

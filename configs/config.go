@@ -1,4 +1,4 @@
-package config
+package configs
 
 import (
 	"alterra-golang-final-project/drivers/postgresql"
@@ -34,8 +34,9 @@ func LoadConfigs() (res *Configs, err error) {
 		DBUsername: viper.GetString("DB_USERNAME"),
 		DBPassword: viper.GetString("DB_PASSWORD"),
 		DBPort:     viper.GetString("DB_PORT"),
+		DBName:     viper.GetString("DB_NAME"),
 	}
 	configs.DB = db.InitDB()
-
+	postgresql.MigrateDB(configs.DB)
 	return &configs, err
 }
