@@ -1,8 +1,8 @@
 package note
 
 import (
-	"alterra-golang-final-project/businesses/note"
 	"context"
+	"keep-remind-app/businesses/note"
 
 	"gorm.io/gorm"
 )

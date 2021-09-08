@@ -1,12 +1,12 @@
 package note
 
 import (
-	"alterra-golang-final-project/businesses"
-	"alterra-golang-final-project/businesses/note"
-	"alterra-golang-final-project/server/handlers"
-	"alterra-golang-final-project/server/handlers/note/request"
-	"alterra-golang-final-project/server/handlers/note/response"
 	"context"
+	"keep-remind-app/businesses"
+	"keep-remind-app/businesses/note"
+	"keep-remind-app/server/handlers"
+	"keep-remind-app/server/handlers/note/request"
+	"keep-remind-app/server/handlers/note/response"
 	"net/http"
 
 	"github.com/labstack/echo/v4"

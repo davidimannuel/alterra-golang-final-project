@@ -1,7 +1,7 @@
 package bootstraps
 
 import (
-	"alterra-golang-final-project/businesses"
+	"keep-remind-app/businesses"
 
 	"github.com/labstack/echo/v4"
 )

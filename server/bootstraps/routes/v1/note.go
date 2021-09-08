@@ -1,10 +1,10 @@
 package v1
 
 import (
-	"alterra-golang-final-project/businesses"
-	uc "alterra-golang-final-project/businesses/note"
-	repo "alterra-golang-final-project/drivers/repositories/note"
-	handler "alterra-golang-final-project/server/handlers/note"
+	"keep-remind-app/businesses"
+	uc "keep-remind-app/businesses/note"
+	repo "keep-remind-app/drivers/repositories/note"
+	handler "keep-remind-app/server/handlers/note"
 
 	"github.com/labstack/echo/v4"
 )

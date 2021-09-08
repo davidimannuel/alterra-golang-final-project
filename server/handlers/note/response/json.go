@@ -1,7 +1,7 @@
 package response
 
 import (
-	"alterra-golang-final-project/businesses/note"
+	"keep-remind-app/businesses/note"
 	"time"
 )
 

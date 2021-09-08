@@ -3,11 +3,12 @@ package main
 import (
 	"log"
 
-	"alterra-golang-final-project/businesses"
-	"alterra-golang-final-project/configs"
-	"alterra-golang-final-project/server/bootstraps"
+	"keep-remind-app/businesses"
+	"keep-remind-app/configs"
+	"keep-remind-app/server/bootstraps"
 
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 func main() {
@@ -28,6 +29,7 @@ func main() {
 
 	//init router
 	e := echo.New()
+	e.Use(middleware.Logger())
 	boot := bootstraps.Bootstrap{
 		App:       e,
 		ContextUC: ctxUc,

@@ -1,7 +1,7 @@
 package bootstraps
 
 import (
-	v1 "alterra-golang-final-project/server/bootstraps/routes/v1"
+	v1 "keep-remind-app/server/bootstraps/routes/v1"
 	"net/http"
 
 	"github.com/labstack/echo/v4"

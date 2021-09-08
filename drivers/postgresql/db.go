@@ -1,8 +1,8 @@
 package postgresql
 
 import (
-	"alterra-golang-final-project/drivers/repositories/note"
 	"fmt"
+	"keep-remind-app/drivers/repositories/note"
 	"log"
 
 	"gorm.io/driver/postgres"

@@ -1,7 +1,7 @@
 package configs
 
 import (
-	"alterra-golang-final-project/drivers/postgresql"
+	"keep-remind-app/drivers/postgresql"
 	"log"
 
 	"github.com/spf13/viper"

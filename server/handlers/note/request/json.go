@@ -1,8 +1,8 @@
 package request
 
 import (
-	"alterra-golang-final-project/businesses/note"
-	"alterra-golang-final-project/helpers/str"
+	"keep-remind-app/businesses/note"
+	"keep-remind-app/helpers/str"
 	"time"
 )
 
