@@ -2,20 +2,20 @@ package v1
 
 import (
 	"keep-remind-app/businesses"
-	uc "keep-remind-app/businesses/note"
-	repo "keep-remind-app/drivers/repositories/note"
-	handler "keep-remind-app/server/handlers/note"
+	uc "keep-remind-app/businesses/user"
+	repo "keep-remind-app/drivers/repositories/user"
+	handler "keep-remind-app/server/handlers/user"
 
 	"github.com/labstack/echo/v4"
 )
 
-type Note struct {
+type User struct {
 	RouterGroup *echo.Group
 	ContextUC   *businesses.ContextUC
 }
 
-func (route *Note) RegisterRoute() {
-	r := route.RouterGroup.Group("/api/notes")
+func (route *User) RegisterRoute() {
+	r := route.RouterGroup.Group("/api/users")
 	repository := repo.NewPostgreSQLRepository(route.ContextUC.DB)
 	usecase := uc.NewUsecase(repository)
 	handler := handler.NewHandler(route.ContextUC, usecase)

@@ -6,13 +6,13 @@ import (
 	"time"
 )
 
-type Note struct {
+type JSON struct {
 	Title      string  `json:"title"`
 	Note       string  `json:"note"`
 	ReminderAt *string `json:"reminder_at"`
 }
 
-func (req *Note) ToDomain() *note.Domain {
+func (req *JSON) ToDomain() *note.Domain {
 	return &note.Domain{
 		Title:      req.Title,
 		Note:       req.Note,

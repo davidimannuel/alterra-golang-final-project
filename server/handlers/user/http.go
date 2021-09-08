@@ -1,12 +1,12 @@
-package note
+package user
 
 import (
 	"context"
 	"keep-remind-app/businesses"
-	"keep-remind-app/businesses/note"
+	"keep-remind-app/businesses/user"
 	"keep-remind-app/server/handlers"
-	"keep-remind-app/server/handlers/note/request"
-	"keep-remind-app/server/handlers/note/response"
+	"keep-remind-app/server/handlers/user/request"
+	"keep-remind-app/server/handlers/user/response"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -14,10 +14,10 @@ import (
 
 type Handler struct {
 	ContextUC *businesses.ContextUC
-	Usecase   note.Usecase
+	Usecase   user.Usecase
 }
 
-func NewHandler(contextUC *businesses.ContextUC, uc note.Usecase) *Handler {
+func NewHandler(contextUC *businesses.ContextUC, uc user.Usecase) *Handler {
 	return &Handler{
 		ContextUC: contextUC,
 		Usecase:   uc,
@@ -38,12 +38,11 @@ func (h *Handler) Add(c echo.Context) error {
 	}
 	data, err := h.Usecase.Add(ctx, req.ToDomain())
 	res := response.JSON{
-		Id:         data.Id,
-		Title:      data.Title,
-		Note:       data.Title,
-		ReminderAt: data.ReminderAt,
-		CreatedAt:  data.CreatedAt,
-		UpdatedAt:  data.UpdatedAt,
+		Id:          data.Id,
+		Username:    data.Username,
+		CountryCode: data.CountryCode,
+		Phone:       data.Phone,
+		Email:       data.Email,
 	}
 	return handlers.SendResponse(c, res, nil, err, http.StatusOK)
 }

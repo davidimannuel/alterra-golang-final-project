@@ -22,9 +22,10 @@ func main() {
 		log.Print("defer function")
 	}()
 
-	ctxUc := businesses.ContextUC{
-		AppHost: configs.AppHost,
-		DB:      configs.DB,
+	contextUC := businesses.ContextUC{
+		AppHost:    configs.AppHost,
+		AppTimeout: configs.AppTimeout,
+		DB:         configs.DB,
 	}
 
 	//init router
@@ -32,7 +33,7 @@ func main() {
 	e.Use(middleware.Logger())
 	boot := bootstraps.Bootstrap{
 		App:       e,
-		ContextUC: ctxUc,
+		ContextUC: contextUC,
 	}
 	boot.RegisterRoute()
 

@@ -3,14 +3,16 @@ package configs
 import (
 	"keep-remind-app/drivers/postgresql"
 	"log"
+	"time"
 
 	"github.com/spf13/viper"
 	"gorm.io/gorm"
 )
 
 type Configs struct {
-	AppHost string
-	DB      *gorm.DB
+	AppHost    string
+	AppTimeout time.Duration
+	DB         *gorm.DB
 }
 
 func LoadConfigs() (res *Configs, err error) {
@@ -28,6 +30,7 @@ func LoadConfigs() (res *Configs, err error) {
 	configs := Configs{}
 	// app host
 	configs.AppHost = viper.GetString("APP_HOST")
+	configs.AppTimeout = time.Duration(viper.GetInt("APP_TIMEOUT")) * time.Second
 	//init db
 	db := postgresql.Config{
 		DBHost:     viper.GetString("DB_HOST"),

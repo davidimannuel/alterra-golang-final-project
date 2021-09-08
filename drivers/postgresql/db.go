@@ -3,6 +3,7 @@ package postgresql
 import (
 	"fmt"
 	"keep-remind-app/drivers/repositories/note"
+	"keep-remind-app/drivers/repositories/user"
 	"log"
 
 	"gorm.io/driver/postgres"
@@ -38,5 +39,5 @@ func (config *Config) InitDB() *gorm.DB {
 }
 
 func MigrateDB(db *gorm.DB) {
-	db.AutoMigrate(&note.Note{}) // migrate db
+	db.AutoMigrate(&note.Model{}, &user.Model{}) // migrate db
 }

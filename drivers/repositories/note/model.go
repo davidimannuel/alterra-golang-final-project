@@ -7,15 +7,21 @@ import (
 	"gorm.io/gorm"
 )
 
-type Note struct {
+var tableName string = "notes"
+
+type Model struct {
 	gorm.Model
 	Title      string
 	Note       string
 	ReminderAt *time.Time
 }
 
-func fromDomain(domain *note.Domain) *Note {
-	return &Note{
+func (model *Model) TableName() string {
+	return tableName
+}
+
+func fromDomain(domain *note.Domain) *Model {
+	return &Model{
 		Model: gorm.Model{
 			ID:        uint(domain.Id),
 			CreatedAt: domain.CreatedAt,
@@ -27,7 +33,7 @@ func fromDomain(domain *note.Domain) *Note {
 	}
 }
 
-func toDomain(model *Note) note.Domain {
+func toDomain(model *Model) note.Domain {
 	return note.Domain{
 		Id:         int(model.ID),
 		Title:      model.Title,

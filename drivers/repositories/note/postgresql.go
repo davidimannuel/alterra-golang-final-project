@@ -11,7 +11,7 @@ type noteRepository struct {
 	DB *gorm.DB
 }
 
-func NewRepository(db *gorm.DB) note.Repository {
+func NewPostgreSQLRepository(db *gorm.DB) note.Repository {
 	return &noteRepository{
 		DB: db,
 	}

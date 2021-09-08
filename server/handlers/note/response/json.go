@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-type Note struct {
+type JSON struct {
 	Id         int        `json:"id"`
 	Title      string     `json:"title"`
 	Note       string     `json:"note"`
@@ -14,8 +14,8 @@ type Note struct {
 	UpdatedAt  time.Time  `json:"updated_at"`
 }
 
-func (res *Note) FromDomain(domain *note.Domain) Note {
-	return Note{
+func (res *JSON) FromDomain(domain *note.Domain) JSON {
+	return JSON{
 		Id:         domain.Id,
 		Title:      domain.Title,
 		Note:       domain.Note,
