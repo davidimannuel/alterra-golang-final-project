@@ -23,5 +23,5 @@ func (repo *noteRepository) Add(ctx context.Context, data *note.Domain) (res not
 	if result.Error != nil {
 		return res, result.Error
 	}
-	return toDomain(model), err
+	return model.toDomain(), err
 }

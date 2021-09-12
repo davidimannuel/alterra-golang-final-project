@@ -33,7 +33,7 @@ func fromDomain(domain *note.Domain) *Model {
 	}
 }
 
-func toDomain(model *Model) note.Domain {
+func (model *Model) toDomain() note.Domain {
 	return note.Domain{
 		Id:         int(model.ID),
 		Title:      model.Title,

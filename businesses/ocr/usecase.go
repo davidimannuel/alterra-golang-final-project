@@ -1,29 +1,35 @@
 package ocr
 
-import "context"
+import (
+	"context"
+
+	"github.com/otiai10/gosseract/v2"
+)
 
 type ocrUsecase struct {
-	repository Repository
+	ocr *gosseract.Client
 }
 
-func NewUsecase(repository Repository) Usecase {
+func NewUsecase(ocr *gosseract.Client) Usecase {
 	return &ocrUsecase{
-		repository: repository,
+		ocr: ocr,
 	}
 }
 
 func (uc ocrUsecase) GetImageTextFromImagePath(ctx context.Context, path string) (res Domain, err error) {
-	res, err = uc.repository.GetImageTextFromImagePath(ctx, path)
+	uc.ocr.SetImage(path)
+	text, err := uc.ocr.Text()
 	if err != nil {
-		return res, err
+		return Domain{}, err
 	}
-	return res, err
+	return Domain{ImageText: text}, nil
 }
 
 func (uc ocrUsecase) GetImageTextFromImageBytes(ctx context.Context, bytes []byte) (res Domain, err error) {
-	res, err = uc.repository.GetImageTextFromImageBytes(ctx, bytes)
+	uc.ocr.SetImageFromBytes(bytes)
+	text, err := uc.ocr.Text()
 	if err != nil {
-		return res, err
+		return Domain{}, err
 	}
-	return res, err
+	return Domain{ImageText: text}, nil
 }

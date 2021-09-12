@@ -19,11 +19,19 @@ func NewUsecase(repository Repository) Usecase {
 func (uc userUsecase) Add(ctx context.Context, data *Domain) (res Domain, err error) {
 	data.Password, err = encrypt.HashPassword(data.Password)
 	if err != nil {
-		return Domain{}, businesses.ErrInternalServer
+		return res, businesses.ErrInternalServer
 	}
-	result, err := uc.repository.Add(ctx, data)
+	res, err = uc.repository.Add(ctx, data)
 	if err != nil {
-		return Domain{}, err
+		return res, businesses.ErrInternalServer
 	}
-	return result, err
+	return
+}
+
+func (uc userUsecase) FindByEmail(ctx context.Context, parameter Parameter) (res Domain, err error) {
+	res, err = uc.repository.FindByEmail(ctx, parameter)
+	if err != nil {
+		return
+	}
+	return
 }

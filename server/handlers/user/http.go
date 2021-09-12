@@ -2,47 +2,42 @@ package user
 
 import (
 	"context"
-	"keep-remind-app/businesses"
 	"keep-remind-app/businesses/user"
+	"keep-remind-app/configs"
 	"keep-remind-app/server/handlers"
 	"keep-remind-app/server/handlers/user/request"
-	"keep-remind-app/server/handlers/user/response"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
 )
 
 type Handler struct {
-	ContextUC *businesses.ContextUC
-	Usecase   user.Usecase
+	configs *configs.Configs
+	usecase user.Usecase
 }
 
-func NewHandler(contextUC *businesses.ContextUC, uc user.Usecase) *Handler {
+func NewHandler(configs *configs.Configs, uc user.Usecase) *Handler {
 	return &Handler{
-		ContextUC: contextUC,
-		Usecase:   uc,
+		configs: configs,
+		usecase: uc,
 	}
 }
 
 func (h *Handler) Get(c echo.Context) error {
 
-	return handlers.SendResponse(c, "ok", nil, nil, http.StatusOK)
+	return handlers.SendSucessResponse(c, "ok", nil)
 }
 
 func (h *Handler) Add(c echo.Context) error {
-	ctx, cancel := context.WithTimeout(context.Background(), h.ContextUC.AppTimeout)
+	ctx, cancel := context.WithTimeout(context.Background(), h.configs.AppTimeout)
 	defer cancel()
-	req := new(request.JSON)
+	req := new(request.Add)
 	if err := c.Bind(req); err != nil {
 		return handlers.SendBadResponse(c, err, http.StatusBadRequest)
 	}
-	data, err := h.Usecase.Add(ctx, req.ToDomain())
-	res := response.JSON{
-		Id:          data.Id,
-		Username:    data.Username,
-		CountryCode: data.CountryCode,
-		Phone:       data.Phone,
-		Email:       data.Email,
+	_, err := h.usecase.Add(ctx, req.ToDomain())
+	if err != nil {
+		return handlers.SendBadResponse(c, err, http.StatusBadRequest)
 	}
-	return handlers.SendResponse(c, res, nil, err, http.StatusOK)
+	return handlers.SendSucessResponse(c, "success", nil)
 }

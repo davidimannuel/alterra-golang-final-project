@@ -3,7 +3,6 @@ package main
 import (
 	"log"
 
-	"keep-remind-app/businesses"
 	"keep-remind-app/configs"
 	"keep-remind-app/server/bootstraps"
 
@@ -22,20 +21,14 @@ func main() {
 		log.Print("defer function")
 	}()
 
-	contextUC := businesses.ContextUC{
-		AppHost:    configs.AppHost,
-		AppTimeout: configs.AppTimeout,
-		DB:         configs.DB,
-	}
-
 	//init router
 	e := echo.New()
 	e.Use(middleware.Logger())
 	boot := bootstraps.Bootstrap{
-		App:       e,
-		ContextUC: contextUC,
+		App:     e,
+		Configs: configs,
 	}
+	boot.Init()
 	boot.RegisterRoute()
-
 	e.Logger.Fatal(boot.App.Start(configs.AppHost))
 }

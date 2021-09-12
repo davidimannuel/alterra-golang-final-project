@@ -23,5 +23,14 @@ func (repo *userRepository) Add(ctx context.Context, data *user.Domain) (res use
 	if result.Error != nil {
 		return res, result.Error
 	}
-	return toDomain(model), err
+	return model.toDomain(), err
+}
+
+func (repo *userRepository) FindByEmail(ctx context.Context, param user.Parameter) (res user.Domain, err error) {
+	model := Model{}
+	err = repo.DB.Where("email = ?", param.Email).First(&model).Error
+	if err != nil {
+		return res, err
+	}
+	return model.toDomain(), nil
 }
