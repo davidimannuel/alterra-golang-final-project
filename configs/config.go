@@ -1,8 +1,9 @@
 package configs
 
 import (
-	"keep-remind-app/drivers/jwt"
 	"keep-remind-app/drivers/postgresql"
+
+	"keep-remind-app/server/middlewares"
 	"log"
 	"time"
 
@@ -14,7 +15,7 @@ type Configs struct {
 	AppHost    string
 	AppTimeout time.Duration
 	DB         *gorm.DB
-	JWT        *jwt.ConfigJWT
+	JWT        *middlewares.ConfigJWT
 }
 
 func LoadConfigs() (res *Configs, err error) {
@@ -44,7 +45,7 @@ func LoadConfigs() (res *Configs, err error) {
 	configs.DB = db.InitDB()
 	postgresql.MigrateDB(configs.DB)
 
-	configs.JWT = &jwt.ConfigJWT{
+	configs.JWT = &middlewares.ConfigJWT{
 		SecretJWT:       viper.GetString("JWT_SECRET"),
 		ExpiresDuration: viper.GetInt("JWT_EXPIRED") * int(time.Second),
 	}

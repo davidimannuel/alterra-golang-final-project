@@ -16,19 +16,10 @@ func main() {
 	if err != nil {
 		log.Fatal("Error load config file")
 	}
-
-	defer func() {
-		log.Print("defer function")
-	}()
-
 	//init router
 	e := echo.New()
 	e.Use(middleware.Logger())
-	boot := bootstraps.Bootstrap{
-		App:     e,
-		Configs: configs,
-	}
-	boot.Init()
+	boot := bootstraps.Init(e, configs)
 	boot.RegisterRoute()
 	e.Logger.Fatal(boot.App.Start(configs.AppHost))
 }

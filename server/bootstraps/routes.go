@@ -1,9 +1,11 @@
 package bootstraps
 
 import (
+	"keep-remind-app/server/middlewares"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 func (boot *Bootstrap) RegisterRoute() {
@@ -14,10 +16,13 @@ func (boot *Bootstrap) RegisterRoute() {
 	// v1 routes
 	apiV1 := boot.App.Group("/v1/api")
 	// auth
-	auth := apiV1.Group("/auth")
-	auth.POST("/register", boot.AuthHandler.Register)
-	auth.POST("/login", boot.AuthHandler.Login)
-
-	user := apiV1.Group("/users")
-	user.POST("", boot.UserHandler.Add)
+	auth := apiV1.Group("/auth", middlewares.ContextManagement(boot.Configs.AppTimeout))
+	boot.AuthHandler.InitRoutes(auth)
+	// users
+	users := apiV1.Group("/users", middlewares.ContextManagement(boot.Configs.AppTimeout))
+	boot.UserHandler.InitRoutes(users)
+	// notes
+	notes := apiV1.Group("/notes", middleware.JWTWithConfig(boot.Configs.JWT.Init()), middlewares.ContextManagement(boot.Configs.AppTimeout))
+	notes.GET("", boot.NoteHandler.Get)
+	notes.POST("", boot.NoteHandler.Add)
 }

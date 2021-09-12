@@ -2,21 +2,20 @@ package auth
 
 import (
 	"context"
-	"fmt"
-	"keep-remind-app/businesses/jwt"
 	"keep-remind-app/businesses/user"
 	"keep-remind-app/helpers/encrypt"
+	"keep-remind-app/server/middlewares"
 )
 
 type authUsecase struct {
-	userUc user.Usecase
-	jwtUc  jwt.Usecase
+	userUc  user.Usecase
+	jwtAuth *middlewares.ConfigJWT
 }
 
-func NewUsecase(userUc user.Usecase, jwtUc jwt.Usecase) Usecase {
+func NewUsecase(userUc user.Usecase, jwtAuth *middlewares.ConfigJWT) Usecase {
 	return &authUsecase{
-		userUc: userUc,
-		jwtUc:  jwtUc,
+		userUc:  userUc,
+		jwtAuth: jwtAuth,
 	}
 }
 
@@ -29,10 +28,7 @@ func (uc *authUsecase) Register(ctx context.Context, data *Domain) (res Domain, 
 	if err != nil {
 		return res, err
 	}
-	res.JWTToken, err = uc.jwtUc.GenerateToken(ctx, user.Id)
-	if err != nil {
-		return res, err
-	}
+	res.JWTToken = uc.jwtAuth.GenerateToken(user.Id)
 	res.Name = data.Name
 	res.Email = data.Email
 	res.Password = user.Password
@@ -44,14 +40,11 @@ func (uc *authUsecase) Login(ctx context.Context, data *Domain) (res Domain, err
 	if err != nil {
 		return
 	}
-	fmt.Println(user)
 	if !encrypt.CheckPasswordHash(data.Password, user.Password) {
 		return res, ErrInvalidPassword
 	}
-	res.JWTToken, err = uc.jwtUc.GenerateToken(ctx, user.Id)
-	if err != nil {
-		return
-	}
+
+	res.JWTToken = uc.jwtAuth.GenerateToken(user.Id)
 	res.Name = user.Name
 	res.Email = user.Email
 	return

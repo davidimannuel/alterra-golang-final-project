@@ -11,6 +11,7 @@ var tableName string = "notes"
 
 type Model struct {
 	gorm.Model
+	UserId     uint
 	Title      string
 	Note       string
 	ReminderAt *time.Time
@@ -27,6 +28,7 @@ func fromDomain(domain *note.Domain) *Model {
 			CreatedAt: domain.CreatedAt,
 			UpdatedAt: domain.UpdatedAt,
 		},
+		UserId:     uint(domain.UserId),
 		Title:      domain.Note,
 		Note:       domain.Note,
 		ReminderAt: domain.ReminderAt,
@@ -36,6 +38,7 @@ func fromDomain(domain *note.Domain) *Model {
 func (model *Model) toDomain() note.Domain {
 	return note.Domain{
 		Id:         int(model.ID),
+		UserId:     int(model.UserId),
 		Title:      model.Title,
 		Note:       model.Note,
 		ReminderAt: model.ReminderAt,

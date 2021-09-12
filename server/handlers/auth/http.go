@@ -24,9 +24,13 @@ func NewHandler(configs *configs.Configs, uc auth.Usecase) *Handler {
 	}
 }
 
+func (h *Handler) InitRoutes(router *echo.Group) {
+	router.POST("/register", h.Register)
+	router.POST("/login", h.Login)
+}
+
 func (h *Handler) Register(c echo.Context) error {
-	ctx, cancel := context.WithTimeout(context.Background(), h.configs.AppTimeout)
-	defer cancel()
+	ctx := c.Get("ctx").(context.Context)
 	req := new(request.Register)
 	if err := c.Bind(req); err != nil {
 		return handlers.SendBadResponse(c, err, http.StatusBadRequest)
@@ -42,8 +46,7 @@ func (h *Handler) Register(c echo.Context) error {
 }
 
 func (h *Handler) Login(c echo.Context) error {
-	ctx, cancel := context.WithTimeout(context.Background(), h.configs.AppTimeout)
-	defer cancel()
+	ctx := c.Get("ctx").(context.Context)
 	req := new(request.Login)
 	if err := c.Bind(req); err != nil {
 		return handlers.SendBadResponse(c, err, http.StatusBadRequest)

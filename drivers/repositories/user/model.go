@@ -2,6 +2,7 @@ package user
 
 import (
 	"keep-remind-app/businesses/user"
+	"keep-remind-app/drivers/repositories/note"
 
 	"gorm.io/gorm"
 )
@@ -13,6 +14,7 @@ type Model struct {
 	Name     string
 	Email    string
 	Password string
+	Notes    []note.Model `gorm:"foreignKey:UserId"`
 }
 
 func (model *Model) TableName() string {

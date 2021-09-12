@@ -7,6 +7,7 @@ import (
 
 type Domain struct {
 	Id         int
+	UserId     int
 	Title      string
 	Note       string
 	ReminderAt *time.Time
@@ -17,6 +18,7 @@ type Domain struct {
 
 type Parameter struct {
 	Id         int
+	UserId     int
 	Title      string
 	Note       string
 	ReminderAt string
@@ -30,8 +32,8 @@ type Parameter struct {
 }
 
 type Repository interface {
-	// FindAll(ctx context.Context, parameter Parameter) ([]Domain, int, error)
-	// SelectAll(ctx context.Context, parameter Parameter) ([]Domain, error)
+	// FindAllPagination(ctx context.Context, parameter Parameter) ([]Domain, int, error)
+	// FindAll(ctx context.Context, parameter Parameter) ([]Domain, error)
 	// FindByID(ctx context.Context, parameter Parameter) (Domain, error)
 	// FindByTitle(ctx context.Context, parameter Parameter) (Domain, error)
 	// FindByTitleOrNote(ctx context.Context, parameter Parameter) (Domain, error)
@@ -41,8 +43,8 @@ type Repository interface {
 }
 
 type Usecase interface {
-	// FindAll(ctx context.Context, parameter Parameter) ([]Domain, int, error)
-	// SelectAll(ctx context.Context, parameter Parameter) ([]Domain, error)
+	// FindAllPagination(ctx context.Context, parameter Parameter) ([]Domain, int, error)
+	// FindAll(ctx context.Context, parameter Parameter) ([]Domain, error)
 	// FindByID(ctx context.Context, parameter Parameter) (Domain, error)
 	// FindByTitle(ctx context.Context, parameter Parameter) (Domain, error)
 	// FindByTitleOrNote(ctx context.Context, parameter Parameter) (Domain, error)

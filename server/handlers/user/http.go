@@ -23,6 +23,10 @@ func NewHandler(configs *configs.Configs, uc user.Usecase) *Handler {
 	}
 }
 
+func (h *Handler) InitRoutes(router *echo.Group) {
+	router.POST("", h.Add)
+}
+
 func (h *Handler) Get(c echo.Context) error {
 
 	return handlers.SendSucessResponse(c, "ok", nil)
