@@ -15,10 +15,10 @@ type Configs struct {
 	AppHost    string
 	AppTimeout time.Duration
 	DB         *gorm.DB
-	JWT        *middlewares.ConfigJWT
+	JWT        middlewares.ConfigJWT
 }
 
-func LoadConfigs() (res *Configs, err error) {
+func LoadConfigs() (res Configs, err error) {
 	// read config
 	viper.SetConfigFile("../.env")
 	if err = viper.ReadInConfig(); err != nil {
@@ -45,9 +45,9 @@ func LoadConfigs() (res *Configs, err error) {
 	configs.DB = db.InitDB()
 	postgresql.MigrateDB(configs.DB)
 
-	configs.JWT = &middlewares.ConfigJWT{
+	configs.JWT = middlewares.ConfigJWT{
 		SecretJWT:       viper.GetString("JWT_SECRET"),
 		ExpiresDuration: viper.GetInt("JWT_EXPIRED") * int(time.Second),
 	}
-	return &configs, err
+	return configs, err
 }

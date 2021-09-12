@@ -16,13 +16,13 @@ import (
 
 type Bootstrap struct {
 	App         *echo.Echo
-	Configs     *configs.Configs
+	Configs     configs.Configs
 	AuthHandler *_authHandler.Handler
 	UserHandler *_userHandler.Handler
 	NoteHandler *_noteHandler.Handler
 }
 
-func Init(app *echo.Echo, configs *configs.Configs) *Bootstrap {
+func Init(app *echo.Echo, configs configs.Configs) *Bootstrap {
 	//init middleware
 
 	// factory repository
@@ -30,15 +30,16 @@ func Init(app *echo.Echo, configs *configs.Configs) *Bootstrap {
 	noteRepo := _noteRepo.NewPostgreSQLRepository(configs.DB)
 	// factory usecase
 	userUc := _userUc.NewUsecase(userRepo)
-	authUc := _authUc.NewUsecase(userUc, configs.JWT)
+	// configJwt := configs.JWT
+	authUc := _authUc.NewUsecase(userUc, &configs.JWT)
 	noteUc := _noteUc.NewUsecase(noteRepo)
 	// boot
 	boot := Bootstrap{
 		App:         app,
 		Configs:     configs,
-		AuthHandler: _authHandler.NewHandler(configs, authUc),
-		UserHandler: _userHandler.NewHandler(configs, userUc),
-		NoteHandler: _noteHandler.NewHandler(configs, noteUc),
+		AuthHandler: _authHandler.NewHandler(&configs, authUc),
+		UserHandler: _userHandler.NewHandler(&configs, userUc),
+		NoteHandler: _noteHandler.NewHandler(&configs, noteUc),
 	}
 	return &boot
 }

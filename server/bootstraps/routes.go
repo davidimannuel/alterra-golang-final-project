@@ -23,6 +23,5 @@ func (boot *Bootstrap) RegisterRoute() {
 	boot.UserHandler.InitRoutes(users)
 	// notes
 	notes := apiV1.Group("/notes", middleware.JWTWithConfig(boot.Configs.JWT.Init()), middlewares.ContextManagement(boot.Configs.AppTimeout))
-	notes.GET("", boot.NoteHandler.Get)
-	notes.POST("", boot.NoteHandler.Add)
+	boot.NoteHandler.InitRoutes(notes)
 }
