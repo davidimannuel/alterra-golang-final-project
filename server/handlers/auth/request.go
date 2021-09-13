@@ -1,4 +1,4 @@
-package request
+package auth
 
 import "keep-remind-app/businesses/auth"
 
@@ -10,6 +10,7 @@ type Register struct {
 
 func (req *Register) ToDomain() *auth.Domain {
 	return &auth.Domain{
+		Name:     req.Name,
 		Email:    req.Email,
 		Password: req.Password,
 	}

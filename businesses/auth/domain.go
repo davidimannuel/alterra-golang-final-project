@@ -10,11 +10,6 @@ type Domain struct {
 	JWTToken string
 }
 
-type Repository interface {
-	Register(ctx context.Context, data *Domain) (Domain, error)
-	Login(ctx context.Context, data *Domain) (Domain, error)
-}
-
 type Usecase interface {
 	Register(ctx context.Context, data *Domain) (Domain, error)
 	Login(ctx context.Context, data *Domain) (Domain, error)

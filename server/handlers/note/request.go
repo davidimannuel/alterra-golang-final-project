@@ -1,4 +1,4 @@
-package request
+package note
 
 import (
 	"keep-remind-app/businesses/note"
@@ -6,13 +6,13 @@ import (
 	"time"
 )
 
-type JSON struct {
+type AddNote struct {
 	Title      string  `json:"title"`
 	Note       string  `json:"note"`
 	ReminderAt *string `json:"reminder_at"`
 }
 
-func (req *JSON) ToDomain() *note.Domain {
+func (req *AddNote) ToDomain() *note.Domain {
 	return &note.Domain{
 		Title:      req.Title,
 		Note:       req.Note,

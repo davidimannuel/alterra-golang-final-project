@@ -2,34 +2,27 @@ package ocr
 
 import (
 	"context"
-
-	"github.com/otiai10/gosseract/v2"
+	"keep-remind-app/drivers/ocr"
 )
 
-type ocrUsecase struct {
-	ocr *gosseract.Client
+type ocrUsecase struct{}
+
+func NewUsecase() Usecase {
+	return &ocrUsecase{}
 }
 
-func NewUsecase(ocr *gosseract.Client) Usecase {
-	return &ocrUsecase{
-		ocr: ocr,
-	}
-}
-
-func (uc ocrUsecase) GetImageTextFromImagePath(ctx context.Context, path string) (res Domain, err error) {
-	uc.ocr.SetImage(path)
-	text, err := uc.ocr.Text()
+func (uc ocrUsecase) GetImageTextFromImagePath(ctx context.Context, path string) (res string, err error) {
+	res, err = ocr.GetImageTextFromImagePath(path)
 	if err != nil {
-		return Domain{}, err
+		return res, err
 	}
-	return Domain{ImageText: text}, nil
+	return res, err
 }
 
-func (uc ocrUsecase) GetImageTextFromImageBytes(ctx context.Context, bytes []byte) (res Domain, err error) {
-	uc.ocr.SetImageFromBytes(bytes)
-	text, err := uc.ocr.Text()
+func (uc ocrUsecase) GetImageTextFromImageBytes(ctx context.Context, bytes []byte) (res string, err error) {
+	res, err = ocr.GetImageTextFromImageBytes(bytes)
 	if err != nil {
-		return Domain{}, err
+		return res, err
 	}
-	return Domain{ImageText: text}, nil
+	return res, err
 }

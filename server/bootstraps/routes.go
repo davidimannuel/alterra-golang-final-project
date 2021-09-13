@@ -19,7 +19,7 @@ func (boot *Bootstrap) RegisterRoute() {
 	auth := apiV1.Group("/auth", middlewares.ContextManagement(boot.Configs.AppTimeout))
 	boot.AuthHandler.InitRoutes(auth)
 	// users
-	users := apiV1.Group("/users", middlewares.ContextManagement(boot.Configs.AppTimeout))
+	users := apiV1.Group("/users", middleware.JWTWithConfig(boot.Configs.JWT.Init()), middlewares.ContextManagement(boot.Configs.AppTimeout))
 	boot.UserHandler.InitRoutes(users)
 	// notes
 	notes := apiV1.Group("/notes", middleware.JWTWithConfig(boot.Configs.JWT.Init()), middlewares.ContextManagement(boot.Configs.AppTimeout))

@@ -2,7 +2,6 @@ package middlewares
 
 import (
 	"context"
-	"log"
 	"time"
 
 	"github.com/golang-jwt/jwt"
@@ -22,10 +21,8 @@ func ContextManagement(appTimeout time.Duration) echo.MiddlewareFunc {
 			//jwt
 			if c.Get("user") != nil {
 				user := c.Get("user").(*jwt.Token)
-				log.Printf("%#v", user)
 				claims := user.Claims.(*JwtCustomClaims)
-				log.Println("claims.UserId", cast.ToString(claims.UserId))
-				ctx = context.WithValue(ctx, "user_id", cast.ToString(claims.UserId))
+				ctx = context.WithValue(ctx, "user_id", cast.ToInt(claims.UserId))
 			}
 
 			c.Set("ctx", ctx)

@@ -2,17 +2,18 @@ package auth
 
 import (
 	"context"
-	"keep-remind-app/businesses/user"
+	"keep-remind-app/businesses"
+	userDomain "keep-remind-app/businesses/user"
 	"keep-remind-app/helpers/encrypt"
 	"keep-remind-app/server/middlewares"
 )
 
 type authUsecase struct {
-	userUc  user.Usecase
+	userUc  userDomain.Usecase
 	jwtAuth *middlewares.ConfigJWT
 }
 
-func NewUsecase(userUc user.Usecase, jwtAuth *middlewares.ConfigJWT) Usecase {
+func NewUsecase(userUc userDomain.Usecase, jwtAuth *middlewares.ConfigJWT) Usecase {
 	return &authUsecase{
 		userUc:  userUc,
 		jwtAuth: jwtAuth,
@@ -20,7 +21,11 @@ func NewUsecase(userUc user.Usecase, jwtAuth *middlewares.ConfigJWT) Usecase {
 }
 
 func (uc *authUsecase) Register(ctx context.Context, data *Domain) (res Domain, err error) {
-	user, err := uc.userUc.Add(ctx, &user.Domain{
+	user, _ := uc.userUc.FindByEmail(ctx, userDomain.Parameter{Email: data.Email})
+	if user.ID != 0 {
+		return res, businesses.ErrDuplicateData
+	}
+	user, err = uc.userUc.Add(ctx, &userDomain.Domain{
 		Name:     data.Name,
 		Email:    data.Email,
 		Password: data.Password,
@@ -28,7 +33,7 @@ func (uc *authUsecase) Register(ctx context.Context, data *Domain) (res Domain, 
 	if err != nil {
 		return res, err
 	}
-	res.JWTToken = uc.jwtAuth.GenerateToken(user.Id)
+	res.JWTToken = uc.jwtAuth.GenerateToken(user.ID)
 	res.Name = data.Name
 	res.Email = data.Email
 	res.Password = user.Password
@@ -36,7 +41,7 @@ func (uc *authUsecase) Register(ctx context.Context, data *Domain) (res Domain, 
 }
 
 func (uc *authUsecase) Login(ctx context.Context, data *Domain) (res Domain, err error) {
-	user, err := uc.userUc.FindByEmail(ctx, user.Parameter{Email: data.Email})
+	user, err := uc.userUc.FindByEmail(ctx, userDomain.Parameter{Email: data.Email})
 	if err != nil {
 		return
 	}
@@ -44,7 +49,7 @@ func (uc *authUsecase) Login(ctx context.Context, data *Domain) (res Domain, err
 		return res, ErrInvalidPassword
 	}
 
-	res.JWTToken = uc.jwtAuth.GenerateToken(user.Id)
+	res.JWTToken = uc.jwtAuth.GenerateToken(user.ID)
 	res.Name = user.Name
 	res.Email = user.Email
 	return

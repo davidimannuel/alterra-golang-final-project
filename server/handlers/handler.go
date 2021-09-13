@@ -7,8 +7,8 @@ import (
 )
 
 type BaseResponse struct {
-	Data interface{} `json:"data"`
-	Meta interface{} `json:"meta"`
+	Data interface{} `json:"data,omitempty"`
+	Meta interface{} `json:"meta,omitempty"`
 }
 
 func SendSucessResponse(c echo.Context, data, meta interface{}) error {

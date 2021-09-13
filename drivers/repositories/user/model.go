@@ -14,7 +14,7 @@ type Model struct {
 	Name     string
 	Email    string
 	Password string
-	Notes    []note.Model `gorm:"foreignKey:UserId"`
+	Notes    []note.Model `gorm:"foreignKey:UserID"`
 }
 
 func (model *Model) TableName() string {
@@ -24,7 +24,7 @@ func (model *Model) TableName() string {
 func fromDomain(domain *user.Domain) *Model {
 	return &Model{
 		Model: gorm.Model{
-			ID:        uint(domain.Id),
+			ID:        uint(domain.ID),
 			CreatedAt: domain.CreatedAt,
 			UpdatedAt: domain.UpdatedAt,
 		},
@@ -36,7 +36,7 @@ func fromDomain(domain *user.Domain) *Model {
 
 func (model *Model) toDomain() user.Domain {
 	return user.Domain{
-		Id:        int(model.ID),
+		ID:        int(model.ID),
 		Name:      model.Name,
 		Email:     model.Email,
 		Password:  model.Password,

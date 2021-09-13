@@ -5,7 +5,6 @@ import (
 	"keep-remind-app/businesses/user"
 	"keep-remind-app/configs"
 	"keep-remind-app/server/handlers"
-	"keep-remind-app/server/handlers/user/request"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -24,24 +23,16 @@ func NewHandler(configs *configs.Configs, uc user.Usecase) *Handler {
 }
 
 func (h *Handler) InitRoutes(router *echo.Group) {
-	router.POST("", h.Add)
+	router.GET("/profile", h.Profile)
 }
 
-func (h *Handler) Get(c echo.Context) error {
-
-	return handlers.SendSucessResponse(c, "ok", nil)
-}
-
-func (h *Handler) Add(c echo.Context) error {
-	ctx, cancel := context.WithTimeout(context.Background(), h.configs.AppTimeout)
-	defer cancel()
-	req := new(request.Add)
-	if err := c.Bind(req); err != nil {
-		return handlers.SendBadResponse(c, err, http.StatusBadRequest)
-	}
-	_, err := h.usecase.Add(ctx, req.ToDomain())
+func (h *Handler) Profile(c echo.Context) error {
+	ctx := c.Get("ctx").(context.Context)
+	res, err := h.usecase.FindByID(ctx, user.Parameter{
+		ID: ctx.Value("user_id").(int),
+	})
 	if err != nil {
-		return handlers.SendBadResponse(c, err, http.StatusBadRequest)
+		return handlers.SendBadResponse(c, err, http.StatusNotFound)
 	}
-	return handlers.SendSucessResponse(c, "success", nil)
+	return handlers.SendSucessResponse(c, FromDomain(&res), nil)
 }

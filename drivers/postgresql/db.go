@@ -39,5 +39,5 @@ func (config *Config) InitDB() *gorm.DB {
 }
 
 func MigrateDB(db *gorm.DB) {
-	db.AutoMigrate(&note.Model{}, &user.Model{}) // migrate db
+	db.AutoMigrate(&user.Model{}, &note.Model{}) // migrate db
 }

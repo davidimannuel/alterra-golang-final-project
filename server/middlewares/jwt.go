@@ -2,7 +2,6 @@ package middlewares
 
 import (
 	"keep-remind-app/server/handlers"
-	"log"
 	"net/http"
 	"time"
 
@@ -42,7 +41,6 @@ func (jwtConf *ConfigJWT) GenerateToken(userId int) string {
 
 	// Create token with claims
 	t := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	log.Printf("%#v", t)
 	token, _ := t.SignedString([]byte(jwtConf.SecretJWT))
 
 	return token

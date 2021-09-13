@@ -7,7 +7,7 @@ import (
 )
 
 type Domain struct {
-	Id        int
+	ID        int
 	Name      string
 	Password  string
 	Email     string
@@ -17,7 +17,7 @@ type Domain struct {
 }
 
 type Parameter struct {
-	Id        int
+	ID        int
 	Name      string
 	Password  string
 	Email     string
@@ -30,7 +30,7 @@ type Parameter struct {
 type Repository interface {
 	// FindAll(ctx context.Context, parameter Parameter) ([]Domain, int, error)
 	// SelectAll(ctx context.Context, parameter Parameter) ([]Domain, error)
-	// FindByID(ctx context.Context, parameter Parameter) (Domain, error)
+	FindByID(ctx context.Context, parameter Parameter) (Domain, error)
 	FindByEmail(ctx context.Context, parameter Parameter) (Domain, error)
 	Add(ctx context.Context, data *Domain) (Domain, error)
 	// Edit(ctx context.Context, data *Domain) (Domain, error)
@@ -40,7 +40,7 @@ type Repository interface {
 type Usecase interface {
 	// FindAll(ctx context.Context, parameter Parameter) ([]Domain, int, error)
 	// SelectAll(ctx context.Context, parameter Parameter) ([]Domain, error)
-	// FindByID(ctx context.Context, parameter Parameter) (Domain, error)
+	FindByID(ctx context.Context, parameter Parameter) (Domain, error)
 	FindByEmail(ctx context.Context, parameter Parameter) (Domain, error)
 	Add(ctx context.Context, data *Domain) (Domain, error)
 	// Edit(ctx context.Context, data *Domain) (Domain, error)

@@ -3,6 +3,7 @@ package bootstraps
 import (
 	_authUc "keep-remind-app/businesses/auth"
 	_noteUc "keep-remind-app/businesses/note"
+	_ocrUc "keep-remind-app/businesses/ocr"
 	_userUc "keep-remind-app/businesses/user"
 	"keep-remind-app/configs"
 	_noteRepo "keep-remind-app/drivers/repositories/note"
@@ -30,9 +31,10 @@ func Init(app *echo.Echo, configs configs.Configs) *Bootstrap {
 	noteRepo := _noteRepo.NewPostgreSQLRepository(configs.DB)
 	// factory usecase
 	userUc := _userUc.NewUsecase(userRepo)
+	ocrUc := _ocrUc.NewUsecase()
 	// configJwt := configs.JWT
 	authUc := _authUc.NewUsecase(userUc, &configs.JWT)
-	noteUc := _noteUc.NewUsecase(noteRepo)
+	noteUc := _noteUc.NewUsecase(noteRepo, ocrUc)
 	// boot
 	boot := Bootstrap{
 		App:         app,

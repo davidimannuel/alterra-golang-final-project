@@ -1,14 +1,14 @@
-package request
+package user
 
 import "keep-remind-app/businesses/user"
 
-type Add struct {
+type UserAdd struct {
 	Name     string `json:"Name"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
 
-func (req *Add) ToDomain() *user.Domain {
+func (req *UserAdd) ToDomain() *user.Domain {
 	return &user.Domain{
 		Name:     req.Name,
 		Email:    req.Email,

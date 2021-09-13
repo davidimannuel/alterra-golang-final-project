@@ -5,8 +5,6 @@ import (
 	"keep-remind-app/businesses/auth"
 	"keep-remind-app/configs"
 	"keep-remind-app/server/handlers"
-	"keep-remind-app/server/handlers/auth/request"
-	"keep-remind-app/server/handlers/auth/response"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -31,12 +29,12 @@ func (h *Handler) InitRoutes(router *echo.Group) {
 
 func (h *Handler) Register(c echo.Context) error {
 	ctx := c.Get("ctx").(context.Context)
-	req := new(request.Register)
+	req := new(Register)
 	if err := c.Bind(req); err != nil {
 		return handlers.SendBadResponse(c, err, http.StatusBadRequest)
 	}
 	data, err := h.usecase.Register(ctx, req.ToDomain())
-	res := response.JWT{
+	res := JWT{
 		Token: data.JWTToken,
 	}
 	if err != nil {
@@ -47,7 +45,7 @@ func (h *Handler) Register(c echo.Context) error {
 
 func (h *Handler) Login(c echo.Context) error {
 	ctx := c.Get("ctx").(context.Context)
-	req := new(request.Login)
+	req := new(Login)
 	if err := c.Bind(req); err != nil {
 		return handlers.SendBadResponse(c, err, http.StatusBadRequest)
 	}
@@ -55,7 +53,7 @@ func (h *Handler) Login(c echo.Context) error {
 	if err != nil {
 		return handlers.SendBadResponse(c, err, http.StatusBadRequest)
 	}
-	res := response.JWT{
+	res := JWT{
 		Token: data.JWTToken,
 	}
 	return handlers.SendSucessResponse(c, res, nil)

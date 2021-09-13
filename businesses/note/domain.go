@@ -6,8 +6,8 @@ import (
 )
 
 type Domain struct {
-	Id         int
-	UserId     int
+	ID         int
+	UserID     int
 	Title      string
 	Note       string
 	ReminderAt *time.Time
@@ -17,8 +17,8 @@ type Domain struct {
 }
 
 type Parameter struct {
-	Id         int
-	UserId     int
+	ID         int
+	UserID     int
 	Title      string
 	Note       string
 	ReminderAt string
@@ -32,23 +32,22 @@ type Parameter struct {
 }
 
 type Repository interface {
-	// FindAllPagination(ctx context.Context, parameter Parameter) ([]Domain, int, error)
-	// FindAll(ctx context.Context, parameter Parameter) ([]Domain, error)
-	// FindByID(ctx context.Context, parameter Parameter) (Domain, error)
-	// FindByTitle(ctx context.Context, parameter Parameter) (Domain, error)
-	// FindByTitleOrNote(ctx context.Context, parameter Parameter) (Domain, error)
-	Add(ctx context.Context, data *Domain) (Domain, error)
-	// Edit(ctx context.Context, data *Domain) (Domain, error)
-	// Delete(ctx context.Context, id int) (Domain, error)
+	FindAllPagination(ctx context.Context, parameter Parameter) ([]Domain, int, error)
+	FindAll(ctx context.Context, parameter Parameter) ([]Domain, error)
+	FindOne(ctx context.Context, parameter Parameter) (Domain, error)
+	Add(ctx context.Context, data *Domain) (int, error)
+	Edit(ctx context.Context, data *Domain) (int, error)
+	Delete(ctx context.Context, id int) (int, error)
 }
 
 type Usecase interface {
 	// FindAllPagination(ctx context.Context, parameter Parameter) ([]Domain, int, error)
-	// FindAll(ctx context.Context, parameter Parameter) ([]Domain, error)
-	// FindByID(ctx context.Context, parameter Parameter) (Domain, error)
+	FindAll(ctx context.Context, parameter Parameter) ([]Domain, error)
+	FindByID(ctx context.Context, parameter Parameter) (Domain, error)
 	// FindByTitle(ctx context.Context, parameter Parameter) (Domain, error)
 	// FindByTitleOrNote(ctx context.Context, parameter Parameter) (Domain, error)
 	Add(ctx context.Context, data *Domain) (Domain, error)
+	AddWithImageBytes(ctx context.Context, title string, imageBytes []byte) (Domain, error)
 	// Edit(ctx context.Context, data *Domain) (Domain, error)
 	// Delete(ctx context.Context, id int) (Domain, error)
 }

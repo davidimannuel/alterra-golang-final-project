@@ -34,3 +34,12 @@ func (repo *userRepository) FindByEmail(ctx context.Context, param user.Paramete
 	}
 	return model.toDomain(), nil
 }
+
+func (repo *userRepository) FindByID(ctx context.Context, param user.Parameter) (res user.Domain, err error) {
+	model := Model{}
+	err = repo.DB.Where("id = ?", param.ID).First(&model).Error
+	if err != nil {
+		return res, err
+	}
+	return model.toDomain(), nil
+}
