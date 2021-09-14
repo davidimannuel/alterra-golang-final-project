@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-type Note struct {
+type NoteResponse struct {
 	ID         int        `json:"id"`
 	Title      string     `json:"title"`
 	Note       string     `json:"note"`
@@ -14,8 +14,8 @@ type Note struct {
 	UpdatedAt  time.Time  `json:"updated_at"`
 }
 
-func FromDomain(domain *note.Domain) Note {
-	return Note{
+func FromDomain(domain *note.NoteDomain) NoteResponse {
+	return NoteResponse{
 		ID:         domain.ID,
 		Title:      domain.Title,
 		Note:       domain.Note,
@@ -25,7 +25,7 @@ func FromDomain(domain *note.Domain) Note {
 	}
 }
 
-func FromDomains(domains []note.Domain) (res []Note) {
+func FromDomains(domains []note.NoteDomain) (res []NoteResponse) {
 	for i := range domains {
 		res = append(res, FromDomain(&domains[i]))
 	}

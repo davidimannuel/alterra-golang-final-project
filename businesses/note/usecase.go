@@ -7,32 +7,32 @@ import (
 )
 
 type noteUsecase struct {
-	repository Repository
-	ocrUsecase ocr.Usecase
+	repository NoteRepository
+	ocrUsecase ocr.OCRUsecase
 }
 
-func NewUsecase(repository Repository, ocrUsecase ocr.Usecase) Usecase {
+func NewNoteUsecase(repository NoteRepository, ocrUsecase ocr.OCRUsecase) NoteUsecase {
 	return &noteUsecase{
 		repository: repository,
 		ocrUsecase: ocrUsecase,
 	}
 }
 
-func (uc noteUsecase) Add(ctx context.Context, data *Domain) (res Domain, err error) {
+func (uc noteUsecase) Add(ctx context.Context, data *NoteDomain) (res NoteDomain, err error) {
 	data.UserID = ctx.Value("user_id").(int)
 	res.ID, err = uc.repository.Add(ctx, data)
 	if err != nil {
-		return Domain{}, err
+		return NoteDomain{}, err
 	}
 	return res, err
 }
 
-func (uc noteUsecase) AddWithImageBytes(ctx context.Context, title string, imageBytes []byte) (res Domain, err error) {
+func (uc noteUsecase) AddWithImageBytes(ctx context.Context, title string, imageBytes []byte) (res NoteDomain, err error) {
 	text, err := uc.ocrUsecase.GetImageTextFromImageBytes(ctx, imageBytes)
 	if err != nil {
 		return res, err
 	}
-	res.ID, err = uc.repository.Add(ctx, &Domain{
+	res.ID, err = uc.repository.Add(ctx, &NoteDomain{
 		UserID: ctx.Value("user_id").(int),
 		Title:  title,
 		Note:   text,
@@ -43,14 +43,14 @@ func (uc noteUsecase) AddWithImageBytes(ctx context.Context, title string, image
 	return res, err
 }
 
-func (uc noteUsecase) FindAll(ctx context.Context, parameter Parameter) (res []Domain, err error) {
-	res, err = uc.repository.FindAll(ctx, parameter)
+func (uc noteUsecase) FindAll(ctx context.Context, param *NoteParameter) (res []NoteDomain, err error) {
+	res, err = uc.repository.FindAll(ctx, param)
 	if err != nil {
 		return res, businesses.ErrInternalServer
 	}
 	return res, err
 }
 
-func (uc noteUsecase) FindByID(ctx context.Context, parameter Parameter) (res Domain, err error) {
+func (uc noteUsecase) FindByID(ctx context.Context, param *NoteParameter) (res NoteDomain, err error) {
 	panic("implement me")
 }

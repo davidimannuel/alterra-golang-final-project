@@ -9,48 +9,41 @@ import (
 )
 
 type authUsecase struct {
-	userUc  userDomain.Usecase
+	userUc  userDomain.UserUsecase
 	jwtAuth *middlewares.ConfigJWT
 }
 
-func NewUsecase(userUc userDomain.Usecase, jwtAuth *middlewares.ConfigJWT) Usecase {
+func NewAuthUsecase(userUc userDomain.UserUsecase, jwtAuth *middlewares.ConfigJWT) AuthUsecase {
 	return &authUsecase{
 		userUc:  userUc,
 		jwtAuth: jwtAuth,
 	}
 }
 
-func (uc *authUsecase) Register(ctx context.Context, data *Domain) (res Domain, err error) {
-	user, _ := uc.userUc.FindByEmail(ctx, userDomain.Parameter{Email: data.Email})
+func (uc *authUsecase) Register(ctx context.Context, data *AuthDomain) (jwtToken string, err error) {
+	user, _ := uc.userUc.FindByEmail(ctx, &userDomain.UserParameter{Email: data.Email})
 	if user.ID != 0 {
-		return res, businesses.ErrDuplicateData
+		return "", businesses.ErrDuplicateData
 	}
-	user, err = uc.userUc.Add(ctx, &userDomain.Domain{
+	user, err = uc.userUc.Add(ctx, &userDomain.UserDomain{
 		Name:     data.Name,
 		Email:    data.Email,
 		Password: data.Password,
 	})
 	if err != nil {
-		return res, err
+		return "", err
 	}
-	res.JWTToken = uc.jwtAuth.GenerateToken(user.ID)
-	res.Name = data.Name
-	res.Email = data.Email
-	res.Password = user.Password
-	return
+	return uc.jwtAuth.GenerateToken(user.ID), nil
 }
 
-func (uc *authUsecase) Login(ctx context.Context, data *Domain) (res Domain, err error) {
-	user, err := uc.userUc.FindByEmail(ctx, userDomain.Parameter{Email: data.Email})
+func (uc *authUsecase) Login(ctx context.Context, data *AuthDomain) (jwtToken string, err error) {
+	user, err := uc.userUc.FindByEmail(ctx, &userDomain.UserParameter{Email: data.Email})
 	if err != nil {
-		return
+		return "", err
 	}
 	if !encrypt.CheckPasswordHash(data.Password, user.Password) {
-		return res, ErrInvalidPassword
+		return "", ErrInvalidPassword
 	}
 
-	res.JWTToken = uc.jwtAuth.GenerateToken(user.ID)
-	res.Name = user.Name
-	res.Email = user.Email
-	return
+	return uc.jwtAuth.GenerateToken(user.ID), nil
 }

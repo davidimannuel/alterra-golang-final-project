@@ -7,16 +7,16 @@ import (
 )
 
 type userUsecase struct {
-	repository Repository
+	repository UserRepository
 }
 
-func NewUsecase(repository Repository) Usecase {
+func NewUserUsecase(repository UserRepository) UserUsecase {
 	return &userUsecase{
 		repository: repository,
 	}
 }
 
-func (uc userUsecase) Add(ctx context.Context, data *Domain) (res Domain, err error) {
+func (uc userUsecase) Add(ctx context.Context, data *UserDomain) (res UserDomain, err error) {
 	data.Password, err = encrypt.HashPassword(data.Password)
 	if err != nil {
 		return res, businesses.ErrInternalServer
@@ -28,16 +28,16 @@ func (uc userUsecase) Add(ctx context.Context, data *Domain) (res Domain, err er
 	return
 }
 
-func (uc userUsecase) FindByEmail(ctx context.Context, parameter Parameter) (res Domain, err error) {
-	res, err = uc.repository.FindByEmail(ctx, parameter)
+func (uc userUsecase) FindByEmail(ctx context.Context, param *UserParameter) (res UserDomain, err error) {
+	res, err = uc.repository.FindByEmail(ctx, param)
 	if err != nil {
 		return res, businesses.ErrNotFound
 	}
 	return
 }
 
-func (uc userUsecase) FindByID(ctx context.Context, parameter Parameter) (res Domain, err error) {
-	res, err = uc.repository.FindByID(ctx, parameter)
+func (uc userUsecase) FindByID(ctx context.Context, param *UserParameter) (res UserDomain, err error) {
+	res, err = uc.repository.FindByID(ctx, param)
 	if err != nil {
 		return res, businesses.ErrNotFound
 	}

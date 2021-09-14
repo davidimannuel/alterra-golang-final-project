@@ -7,7 +7,7 @@ import (
 
 type ocrUsecase struct{}
 
-func NewUsecase() Usecase {
+func NewOCRUsecase() OCRUsecase {
 	return &ocrUsecase{}
 }
 

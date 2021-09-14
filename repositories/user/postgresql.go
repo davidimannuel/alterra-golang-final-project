@@ -11,13 +11,13 @@ type userRepository struct {
 	DB *gorm.DB
 }
 
-func NewPostgreSQLRepository(db *gorm.DB) user.Repository {
+func NewUserRepository(db *gorm.DB) user.UserRepository {
 	return &userRepository{
 		DB: db,
 	}
 }
 
-func (repo *userRepository) Add(ctx context.Context, data *user.Domain) (res user.Domain, err error) {
+func (repo *userRepository) Add(ctx context.Context, data *user.UserDomain) (res user.UserDomain, err error) {
 	model := fromDomain(data)
 	result := repo.DB.Create(&model)
 	if result.Error != nil {
@@ -26,7 +26,7 @@ func (repo *userRepository) Add(ctx context.Context, data *user.Domain) (res use
 	return model.toDomain(), err
 }
 
-func (repo *userRepository) FindByEmail(ctx context.Context, param user.Parameter) (res user.Domain, err error) {
+func (repo *userRepository) FindByEmail(ctx context.Context, param *user.UserParameter) (res user.UserDomain, err error) {
 	model := Model{}
 	err = repo.DB.Where("email = ?", param.Email).First(&model).Error
 	if err != nil {
@@ -35,7 +35,7 @@ func (repo *userRepository) FindByEmail(ctx context.Context, param user.Paramete
 	return model.toDomain(), nil
 }
 
-func (repo *userRepository) FindByID(ctx context.Context, param user.Parameter) (res user.Domain, err error) {
+func (repo *userRepository) FindByID(ctx context.Context, param *user.UserParameter) (res user.UserDomain, err error) {
 	model := Model{}
 	err = repo.DB.Where("id = ?", param.ID).First(&model).Error
 	if err != nil {

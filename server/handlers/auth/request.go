@@ -2,14 +2,14 @@ package auth
 
 import "keep-remind-app/businesses/auth"
 
-type Register struct {
+type RegisterUserRequest struct {
 	Name     string `json:"name"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
 
-func (req *Register) ToDomain() *auth.Domain {
-	return &auth.Domain{
+func (req *RegisterUserRequest) ToDomain() *auth.AuthDomain {
+	return &auth.AuthDomain{
 		Name:     req.Name,
 		Email:    req.Email,
 		Password: req.Password,
@@ -21,8 +21,8 @@ type Login struct {
 	Password string `json:"password"`
 }
 
-func (req *Login) ToDomain() *auth.Domain {
-	return &auth.Domain{
+func (req *Login) ToDomain() *auth.AuthDomain {
+	return &auth.AuthDomain{
 		Email:    req.Email,
 		Password: req.Password,
 	}

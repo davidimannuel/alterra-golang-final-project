@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-type Domain struct {
+type UserDomain struct {
 	ID        int
 	Name      string
 	Password  string
@@ -16,7 +16,7 @@ type Domain struct {
 	DeletedAt *time.Time
 }
 
-type Parameter struct {
+type UserParameter struct {
 	ID        int
 	Name      string
 	Password  string
@@ -27,22 +27,22 @@ type Parameter struct {
 	businesses.BaseParameter
 }
 
-type Repository interface {
-	// FindAll(ctx context.Context, parameter Parameter) ([]Domain, int, error)
-	// SelectAll(ctx context.Context, parameter Parameter) ([]Domain, error)
-	FindByID(ctx context.Context, parameter Parameter) (Domain, error)
-	FindByEmail(ctx context.Context, parameter Parameter) (Domain, error)
-	Add(ctx context.Context, data *Domain) (Domain, error)
-	// Edit(ctx context.Context, data *Domain) (Domain, error)
-	// Delete(ctx context.Context, id int) (Domain, error)
+type UserRepository interface {
+	// FindAll(ctx context.Context, parame *UserParameter) ([]UserDomain, int, error)
+	// SelectAll(ctx context.Context, parame *UserParameter) ([]UserDomain, error)
+	FindByID(ctx context.Context, parame *UserParameter) (UserDomain, error)
+	FindByEmail(ctx context.Context, parame *UserParameter) (UserDomain, error)
+	Add(ctx context.Context, data *UserDomain) (UserDomain, error)
+	// Edit(ctx context.Context, data *UserDomain) (UserDomain, error)
+	// Delete(ctx context.Context, id int) (UserDomain, error)
 }
 
-type Usecase interface {
-	// FindAll(ctx context.Context, parameter Parameter) ([]Domain, int, error)
-	// SelectAll(ctx context.Context, parameter Parameter) ([]Domain, error)
-	FindByID(ctx context.Context, parameter Parameter) (Domain, error)
-	FindByEmail(ctx context.Context, parameter Parameter) (Domain, error)
-	Add(ctx context.Context, data *Domain) (Domain, error)
+type UserUsecase interface {
+	// FindAll(ctx context.Context, parame *UserParameter) ([]UserDomain, int, error)
+	// SelectAll(ctx context.Context, parame *UserParameter) ([]UserDomain, error)
+	FindByID(ctx context.Context, parame *UserParameter) (UserDomain, error)
+	FindByEmail(ctx context.Context, parame *UserParameter) (UserDomain, error)
+	Add(ctx context.Context, data *UserDomain) (UserDomain, error)
 	// Edit(ctx context.Context, data *Domain) (Domain, error)
 	// Delete(ctx context.Context, id int) (Domain, error)
 }

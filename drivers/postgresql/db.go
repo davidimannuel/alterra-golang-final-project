@@ -2,8 +2,8 @@ package postgresql
 
 import (
 	"fmt"
-	"keep-remind-app/drivers/repositories/note"
-	"keep-remind-app/drivers/repositories/user"
+	"keep-remind-app/repositories/note"
+	"keep-remind-app/repositories/user"
 	"log"
 
 	"gorm.io/driver/postgres"

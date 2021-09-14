@@ -10,27 +10,27 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-type Handler struct {
+type UserHandler struct {
 	configs *configs.Configs
-	usecase user.Usecase
+	usecase user.UserUsecase
 }
 
-func NewHandler(configs *configs.Configs, uc user.Usecase) *Handler {
-	return &Handler{
+func NewUserHandler(configs *configs.Configs, uc user.UserUsecase) *UserHandler {
+	return &UserHandler{
 		configs: configs,
 		usecase: uc,
 	}
 }
 
-func (h *Handler) InitRoutes(router *echo.Group) {
+func (h *UserHandler) InitRoutes(router *echo.Group) {
 	router.GET("/profile", h.Profile)
 }
 
-func (h *Handler) Profile(c echo.Context) error {
+func (h *UserHandler) Profile(c echo.Context) error {
 	ctx := c.Get("ctx").(context.Context)
-	res, err := h.usecase.FindByID(ctx, user.Parameter{
-		ID: ctx.Value("user_id").(int),
-	})
+	param := new(user.UserParameter)
+	param.ID = ctx.Value("user_id").(int)
+	res, err := h.usecase.FindByID(ctx, param)
 	if err != nil {
 		return handlers.SendBadResponse(c, err, http.StatusNotFound)
 	}

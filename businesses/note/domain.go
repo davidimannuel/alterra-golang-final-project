@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-type Domain struct {
+type NoteDomain struct {
 	ID         int
 	UserID     int
 	Title      string
@@ -16,7 +16,7 @@ type Domain struct {
 	DeletedAt  *time.Time
 }
 
-type Parameter struct {
+type NoteParameter struct {
 	ID         int
 	UserID     int
 	Title      string
@@ -31,23 +31,23 @@ type Parameter struct {
 	Limit      int
 }
 
-type Repository interface {
-	FindAllPagination(ctx context.Context, parameter Parameter) ([]Domain, int, error)
-	FindAll(ctx context.Context, parameter Parameter) ([]Domain, error)
-	FindOne(ctx context.Context, parameter Parameter) (Domain, error)
-	Add(ctx context.Context, data *Domain) (int, error)
-	Edit(ctx context.Context, data *Domain) (int, error)
+type NoteRepository interface {
+	FindAllPagination(ctx context.Context, param *NoteParameter) ([]NoteDomain, int, error)
+	FindAll(ctx context.Context, param *NoteParameter) ([]NoteDomain, error)
+	FindOne(ctx context.Context, param *NoteParameter) (NoteDomain, error)
+	Add(ctx context.Context, data *NoteDomain) (int, error)
+	Edit(ctx context.Context, data *NoteDomain) (int, error)
 	Delete(ctx context.Context, id int) (int, error)
 }
 
-type Usecase interface {
-	// FindAllPagination(ctx context.Context, parameter Parameter) ([]Domain, int, error)
-	FindAll(ctx context.Context, parameter Parameter) ([]Domain, error)
-	FindByID(ctx context.Context, parameter Parameter) (Domain, error)
-	// FindByTitle(ctx context.Context, parameter Parameter) (Domain, error)
-	// FindByTitleOrNote(ctx context.Context, parameter Parameter) (Domain, error)
-	Add(ctx context.Context, data *Domain) (Domain, error)
-	AddWithImageBytes(ctx context.Context, title string, imageBytes []byte) (Domain, error)
-	// Edit(ctx context.Context, data *Domain) (Domain, error)
-	// Delete(ctx context.Context, id int) (Domain, error)
+type NoteUsecase interface {
+	// FindAllPagination(ctx context.Context, param *NoteParameter) ([]NoteDomain, int, error)
+	FindAll(ctx context.Context, param *NoteParameter) ([]NoteDomain, error)
+	FindByID(ctx context.Context, param *NoteParameter) (NoteDomain, error)
+	// FindByTitle(ctx context.Context, param *NoteParameter) (NoteDomain, error)
+	// FindByTitleOrNote(ctx context.Context, param *NoteParameter) (NoteDomain, error)
+	Add(ctx context.Context, data *NoteDomain) (NoteDomain, error)
+	AddWithImageBytes(ctx context.Context, title string, imageBytes []byte) (NoteDomain, error)
+	// Edit(ctx context.Context, data *NoteDomain) (NoteDomain, error)
+	// Delete(ctx context.Context, id int) (NoteDomain, error)
 }

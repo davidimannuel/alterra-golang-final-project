@@ -2,7 +2,7 @@ package auth
 
 import "context"
 
-type Domain struct {
+type AuthDomain struct {
 	Name     string
 	Email    string
 	Username string
@@ -10,7 +10,7 @@ type Domain struct {
 	JWTToken string
 }
 
-type Usecase interface {
-	Register(ctx context.Context, data *Domain) (Domain, error)
-	Login(ctx context.Context, data *Domain) (Domain, error)
+type AuthUsecase interface {
+	Register(ctx context.Context, data *AuthDomain) (jwtToken string, err error)
+	Login(ctx context.Context, data *AuthDomain) (jwtToken string, err error)
 }

@@ -2,7 +2,7 @@ package user
 
 import (
 	"keep-remind-app/businesses/user"
-	"keep-remind-app/drivers/repositories/note"
+	"keep-remind-app/repositories/note"
 
 	"gorm.io/gorm"
 )
@@ -21,7 +21,7 @@ func (model *Model) TableName() string {
 	return tableName
 }
 
-func fromDomain(domain *user.Domain) *Model {
+func fromDomain(domain *user.UserDomain) *Model {
 	return &Model{
 		Model: gorm.Model{
 			ID:        uint(domain.ID),
@@ -34,8 +34,8 @@ func fromDomain(domain *user.Domain) *Model {
 	}
 }
 
-func (model *Model) toDomain() user.Domain {
-	return user.Domain{
+func (model *Model) toDomain() user.UserDomain {
+	return user.UserDomain{
 		ID:        int(model.ID),
 		Name:      model.Name,
 		Email:     model.Email,

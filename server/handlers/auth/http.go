@@ -10,51 +10,45 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-type Handler struct {
+type AuthHandler struct {
 	configs *configs.Configs
-	usecase auth.Usecase
+	usecase auth.AuthUsecase
 }
 
-func NewHandler(configs *configs.Configs, uc auth.Usecase) *Handler {
-	return &Handler{
+func NewAuthHandler(configs *configs.Configs, uc auth.AuthUsecase) *AuthHandler {
+	return &AuthHandler{
 		configs: configs,
 		usecase: uc,
 	}
 }
 
-func (h *Handler) InitRoutes(router *echo.Group) {
+func (h *AuthHandler) InitRoutes(router *echo.Group) {
 	router.POST("/register", h.Register)
 	router.POST("/login", h.Login)
 }
 
-func (h *Handler) Register(c echo.Context) error {
+func (h *AuthHandler) Register(c echo.Context) error {
 	ctx := c.Get("ctx").(context.Context)
-	req := new(Register)
+	req := new(RegisterUserRequest)
 	if err := c.Bind(req); err != nil {
 		return handlers.SendBadResponse(c, err, http.StatusBadRequest)
 	}
-	data, err := h.usecase.Register(ctx, req.ToDomain())
-	res := JWT{
-		Token: data.JWTToken,
-	}
+	token, err := h.usecase.Register(ctx, req.ToDomain())
 	if err != nil {
 		return handlers.SendBadResponse(c, err, http.StatusBadRequest)
 	}
-	return handlers.SendSucessResponse(c, res, nil)
+	return handlers.SendSucessResponse(c, token, nil)
 }
 
-func (h *Handler) Login(c echo.Context) error {
+func (h *AuthHandler) Login(c echo.Context) error {
 	ctx := c.Get("ctx").(context.Context)
 	req := new(Login)
 	if err := c.Bind(req); err != nil {
 		return handlers.SendBadResponse(c, err, http.StatusBadRequest)
 	}
-	data, err := h.usecase.Login(ctx, req.ToDomain())
+	token, err := h.usecase.Login(ctx, req.ToDomain())
 	if err != nil {
 		return handlers.SendBadResponse(c, err, http.StatusBadRequest)
 	}
-	res := JWT{
-		Token: data.JWTToken,
-	}
-	return handlers.SendSucessResponse(c, res, nil)
+	return handlers.SendSucessResponse(c, token, nil)
 }

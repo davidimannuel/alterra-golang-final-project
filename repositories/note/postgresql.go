@@ -11,13 +11,13 @@ type noteRepository struct {
 	DB *gorm.DB
 }
 
-func NewPostgreSQLRepository(db *gorm.DB) note.Repository {
+func NewNoteRepository(db *gorm.DB) note.NoteRepository {
 	return &noteRepository{
 		DB: db,
 	}
 }
 
-func (repo *noteRepository) FindAllPagination(ctx context.Context, parameter note.Parameter) (res []note.Domain, total int, err error) {
+func (repo *noteRepository) FindAllPagination(ctx context.Context, param *note.NoteParameter) (res []note.NoteDomain, total int, err error) {
 	notes := []Model{}
 	// offset := (page - 1) * perpage
 	err = repo.DB.Where("user_id = ?", ctx.Value("user_id").(int)).Find(&notes).Error
@@ -31,7 +31,7 @@ func (repo *noteRepository) FindAllPagination(ctx context.Context, parameter not
 	}
 	return toDomains(notes), int(totalData), err
 }
-func (repo *noteRepository) FindAll(ctx context.Context, parameter note.Parameter) (res []note.Domain, err error) {
+func (repo *noteRepository) FindAll(ctx context.Context, param *note.NoteParameter) (res []note.NoteDomain, err error) {
 	notes := []Model{}
 	err = repo.DB.Where("user_id = ?", ctx.Value("user_id").(int)).Find(&notes).Error
 	if err != nil {
@@ -39,11 +39,11 @@ func (repo *noteRepository) FindAll(ctx context.Context, parameter note.Paramete
 	}
 	return toDomains(notes), err
 }
-func (repo *noteRepository) FindOne(ctx context.Context, parameter note.Parameter) (note.Domain, error) {
+func (repo *noteRepository) FindOne(ctx context.Context, param *note.NoteParameter) (note.NoteDomain, error) {
 	panic("implement")
 }
 
-func (repo *noteRepository) Add(ctx context.Context, data *note.Domain) (res int, err error) {
+func (repo *noteRepository) Add(ctx context.Context, data *note.NoteDomain) (res int, err error) {
 	model := fromDomain(data)
 	result := repo.DB.Create(&model)
 	if result.Error != nil {
@@ -52,7 +52,7 @@ func (repo *noteRepository) Add(ctx context.Context, data *note.Domain) (res int
 	return int(model.ID), err
 }
 
-func (repo *noteRepository) Edit(ctx context.Context, data *note.Domain) (res int, err error) {
+func (repo *noteRepository) Edit(ctx context.Context, data *note.NoteDomain) (res int, err error) {
 	panic("implement")
 }
 func (repo *noteRepository) Delete(ctx context.Context, id int) (res int, err error) {

@@ -21,7 +21,7 @@ func (model *Model) TableName() string {
 	return tableName
 }
 
-func fromDomain(domain *note.Domain) *Model {
+func fromDomain(domain *note.NoteDomain) *Model {
 	return &Model{
 		Model: gorm.Model{
 			ID:        uint(domain.ID),
@@ -35,8 +35,8 @@ func fromDomain(domain *note.Domain) *Model {
 	}
 }
 
-func (model *Model) toDomain() note.Domain {
-	return note.Domain{
+func (model *Model) toDomain() note.NoteDomain {
+	return note.NoteDomain{
 		ID:         int(model.ID),
 		UserID:     int(model.UserID),
 		Title:      model.Title,
@@ -47,7 +47,7 @@ func (model *Model) toDomain() note.Domain {
 	}
 }
 
-func toDomains(models []Model) (res []note.Domain) {
+func toDomains(models []Model) (res []note.NoteDomain) {
 	for i := range models {
 		res = append(res, models[i].toDomain())
 	}

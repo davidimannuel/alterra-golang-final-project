@@ -12,36 +12,37 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-type Handler struct {
+type NoteHandler struct {
 	configs *configs.Configs
-	usecase note.Usecase
+	usecase note.NoteUsecase
 }
 
-func NewHandler(configs *configs.Configs, uc note.Usecase) *Handler {
-	return &Handler{
+func NewNoteHandler(configs *configs.Configs, uc note.NoteUsecase) *NoteHandler {
+	return &NoteHandler{
 		configs: configs,
 		usecase: uc,
 	}
 }
 
-func (h *Handler) InitRoutes(router *echo.Group) {
+func (h *NoteHandler) InitRoutes(router *echo.Group) {
 	router.GET("", h.Get)
 	router.POST("", h.Add)
 	router.POST("/image", h.AddWithImage)
 }
 
-func (h *Handler) Get(c echo.Context) error {
+func (h *NoteHandler) Get(c echo.Context) error {
 	ctx := c.Get("ctx").(context.Context)
-	res, err := h.usecase.FindAll(ctx, note.Parameter{})
+	param := new(note.NoteParameter)
+	res, err := h.usecase.FindAll(ctx, param)
 	if err != nil {
 		return handlers.SendBadResponse(c, err, http.StatusInternalServerError)
 	}
 	return handlers.SendSucessResponse(c, FromDomains(res), nil)
 }
 
-func (h *Handler) Add(c echo.Context) error {
+func (h *NoteHandler) Add(c echo.Context) error {
 	ctx := c.Get("ctx").(context.Context)
-	req := new(AddNote)
+	req := new(AddNoteRequest)
 	if err := c.Bind(req); err != nil {
 		return handlers.SendBadResponse(c, err, http.StatusBadRequest)
 	}
@@ -52,7 +53,7 @@ func (h *Handler) Add(c echo.Context) error {
 	return handlers.SendSucessResponse(c, "success", nil)
 }
 
-func (h *Handler) AddWithImage(c echo.Context) error {
+func (h *NoteHandler) AddWithImage(c echo.Context) error {
 	ctx := c.Get("ctx").(context.Context)
 	title := c.Request().FormValue("title")
 	file, _, err := c.Request().FormFile("note_image")
