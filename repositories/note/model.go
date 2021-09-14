@@ -2,6 +2,7 @@ package note
 
 import (
 	"keep-remind-app/businesses/note"
+	"keep-remind-app/repositories/label"
 	"time"
 
 	"gorm.io/gorm"
@@ -9,20 +10,21 @@ import (
 
 var tableName string = "notes"
 
-type Model struct {
+type NoteModel struct {
 	gorm.Model
 	UserID     uint
 	Title      string
 	Note       string
 	ReminderAt *time.Time
+	Labels     []*label.LabelModel `gorm:"many2many:note_labels;"`
 }
 
-func (model *Model) TableName() string {
+func (model *NoteModel) TableName() string {
 	return tableName
 }
 
-func fromDomain(domain *note.NoteDomain) *Model {
-	return &Model{
+func fromDomain(domain *note.NoteDomain) *NoteModel {
+	return &NoteModel{
 		Model: gorm.Model{
 			ID:        uint(domain.ID),
 			CreatedAt: domain.CreatedAt,
@@ -35,7 +37,7 @@ func fromDomain(domain *note.NoteDomain) *Model {
 	}
 }
 
-func (model *Model) toDomain() note.NoteDomain {
+func (model *NoteModel) toDomain() note.NoteDomain {
 	return note.NoteDomain{
 		ID:         int(model.ID),
 		UserID:     int(model.UserID),
@@ -47,7 +49,7 @@ func (model *Model) toDomain() note.NoteDomain {
 	}
 }
 
-func toDomains(models []Model) (res []note.NoteDomain) {
+func toDomains(models []NoteModel) (res []note.NoteDomain) {
 	for i := range models {
 		res = append(res, models[i].toDomain())
 	}

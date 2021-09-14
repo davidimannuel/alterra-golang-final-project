@@ -2,6 +2,7 @@ package configs
 
 import (
 	"keep-remind-app/drivers/postgresql"
+	"keep-remind-app/drivers/telebot"
 
 	"keep-remind-app/server/middlewares"
 	"log"
@@ -16,6 +17,7 @@ type Configs struct {
 	AppTimeout time.Duration
 	DB         *gorm.DB
 	JWT        middlewares.ConfigJWT
+	TeleBOT    *telebot.BotAPI
 }
 
 func LoadConfigs() (res Configs, err error) {
@@ -49,5 +51,10 @@ func LoadConfigs() (res Configs, err error) {
 		SecretJWT:       viper.GetString("JWT_SECRET"),
 		ExpiresDuration: viper.GetInt("JWT_EXPIRED") * int(time.Second),
 	}
+
+	configs.TeleBOT = telebot.NewBot(viper.GetString("TELEGRAM_BOT_TOKEN"), telebot.UpdateConfig{
+		Limit:   viper.GetInt("TELEGRAM_BOT_LIMIT"),
+		Timeout: viper.GetInt("TELEGRAM_BOT_TIMEOUT"),
+	})
 	return configs, err
 }

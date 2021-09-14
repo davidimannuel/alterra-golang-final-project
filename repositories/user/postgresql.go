@@ -38,7 +38,7 @@ func (repo *userRepository) Add(ctx context.Context, data *user.UserDomain) (res
 
 func (repo *userRepository) FindOne(ctx context.Context, param *user.UserParameter) (res user.UserDomain, err error) {
 	query := repo.buildParameter(ctx, param)
-	model := Model{}
+	model := UserModel{}
 	err = query.First(&model).Error
 	if err != nil {
 		return res, err

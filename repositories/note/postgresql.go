@@ -18,7 +18,7 @@ func NewNoteRepository(db *gorm.DB) note.NoteRepository {
 }
 
 func (repo *noteRepository) FindAllPagination(ctx context.Context, param *note.NoteParameter) (res []note.NoteDomain, total int, err error) {
-	notes := []Model{}
+	notes := []NoteModel{}
 	// offset := (page - 1) * perpage
 	err = repo.DB.Where("user_id = ?", ctx.Value("user_id").(int)).Find(&notes).Error
 	if err != nil {
@@ -32,7 +32,7 @@ func (repo *noteRepository) FindAllPagination(ctx context.Context, param *note.N
 	return toDomains(notes), int(totalData), err
 }
 func (repo *noteRepository) FindAll(ctx context.Context, param *note.NoteParameter) (res []note.NoteDomain, err error) {
-	notes := []Model{}
+	notes := []NoteModel{}
 	err = repo.DB.Where("user_id = ?", ctx.Value("user_id").(int)).Find(&notes).Error
 	if err != nil {
 		return res, err
