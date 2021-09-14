@@ -24,15 +24,12 @@ type Bootstrap struct {
 }
 
 func Init(app *echo.Echo, configs configs.Configs) *Bootstrap {
-	//init middleware
-
 	// factory repository
 	userRepo := _userRepo.NewUserRepository(configs.DB)
 	noteRepo := _noteRepo.NewNoteRepository(configs.DB)
 	// factory usecase
 	userUc := _userUc.NewUserUsecase(userRepo)
 	ocrUc := _ocrUc.NewOCRUsecase()
-	// configJwt := configs.JWT
 	authUc := _authUc.NewAuthUsecase(userUc, &configs.JWT)
 	noteUc := _noteUc.NewNoteUsecase(noteRepo, ocrUc)
 	// boot

@@ -28,16 +28,8 @@ func (uc userUsecase) Add(ctx context.Context, data *UserDomain) (res UserDomain
 	return
 }
 
-func (uc userUsecase) FindByEmail(ctx context.Context, param *UserParameter) (res UserDomain, err error) {
-	res, err = uc.repository.FindByEmail(ctx, param)
-	if err != nil {
-		return res, businesses.ErrNotFound
-	}
-	return
-}
-
-func (uc userUsecase) FindByID(ctx context.Context, param *UserParameter) (res UserDomain, err error) {
-	res, err = uc.repository.FindByID(ctx, param)
+func (uc userUsecase) FindOne(ctx context.Context, param *UserParameter) (res UserDomain, err error) {
+	res, err = uc.repository.FindOne(ctx, param)
 	if err != nil {
 		return res, businesses.ErrNotFound
 	}

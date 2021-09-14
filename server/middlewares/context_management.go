@@ -22,7 +22,7 @@ func ContextManagement(appTimeout time.Duration) echo.MiddlewareFunc {
 			if c.Get("user") != nil {
 				user := c.Get("user").(*jwt.Token)
 				claims := user.Claims.(*JwtCustomClaims)
-				ctx = context.WithValue(ctx, "user_id", cast.ToInt(claims.UserId))
+				ctx = context.WithValue(ctx, "user_id", cast.ToInt(claims.UserID))
 			}
 
 			c.Set("ctx", ctx)

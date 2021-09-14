@@ -28,20 +28,18 @@ type UserParameter struct {
 }
 
 type UserRepository interface {
-	// FindAll(ctx context.Context, parame *UserParameter) ([]UserDomain, int, error)
-	// SelectAll(ctx context.Context, parame *UserParameter) ([]UserDomain, error)
-	FindByID(ctx context.Context, parame *UserParameter) (UserDomain, error)
-	FindByEmail(ctx context.Context, parame *UserParameter) (UserDomain, error)
+	// FindAll(ctx context.Context, param *UserParameter) ([]UserDomain, int, error)
+	// SelectAll(ctx context.Context, param *UserParameter) ([]UserDomain, error)
+	FindOne(ctx context.Context, param *UserParameter) (UserDomain, error)
 	Add(ctx context.Context, data *UserDomain) (UserDomain, error)
 	// Edit(ctx context.Context, data *UserDomain) (UserDomain, error)
 	// Delete(ctx context.Context, id int) (UserDomain, error)
 }
 
 type UserUsecase interface {
-	// FindAll(ctx context.Context, parame *UserParameter) ([]UserDomain, int, error)
-	// SelectAll(ctx context.Context, parame *UserParameter) ([]UserDomain, error)
-	FindByID(ctx context.Context, parame *UserParameter) (UserDomain, error)
-	FindByEmail(ctx context.Context, parame *UserParameter) (UserDomain, error)
+	// FindAll(ctx context.Context, param *UserParameter) ([]UserDomain, int, error)
+	// SelectAll(ctx context.Context, param *UserParameter) ([]UserDomain, error)
+	FindOne(ctx context.Context, param *UserParameter) (UserDomain, error)
 	Add(ctx context.Context, data *UserDomain) (UserDomain, error)
 	// Edit(ctx context.Context, data *Domain) (Domain, error)
 	// Delete(ctx context.Context, id int) (Domain, error)

@@ -30,7 +30,7 @@ func (h *UserHandler) Profile(c echo.Context) error {
 	ctx := c.Get("ctx").(context.Context)
 	param := new(user.UserParameter)
 	param.ID = ctx.Value("user_id").(int)
-	res, err := h.usecase.FindByID(ctx, param)
+	res, err := h.usecase.FindOne(ctx, param)
 	if err != nil {
 		return handlers.SendBadResponse(c, err, http.StatusNotFound)
 	}

@@ -21,7 +21,7 @@ func NewAuthUsecase(userUc userDomain.UserUsecase, jwtAuth *middlewares.ConfigJW
 }
 
 func (uc *authUsecase) Register(ctx context.Context, data *AuthDomain) (jwtToken string, err error) {
-	user, _ := uc.userUc.FindByEmail(ctx, &userDomain.UserParameter{Email: data.Email})
+	user, _ := uc.userUc.FindOne(ctx, &userDomain.UserParameter{Email: data.Email})
 	if user.ID != 0 {
 		return "", businesses.ErrDuplicateData
 	}
@@ -37,7 +37,7 @@ func (uc *authUsecase) Register(ctx context.Context, data *AuthDomain) (jwtToken
 }
 
 func (uc *authUsecase) Login(ctx context.Context, data *AuthDomain) (jwtToken string, err error) {
-	user, err := uc.userUc.FindByEmail(ctx, &userDomain.UserParameter{Email: data.Email})
+	user, err := uc.userUc.FindOne(ctx, &userDomain.UserParameter{Email: data.Email})
 	if err != nil {
 		return "", err
 	}

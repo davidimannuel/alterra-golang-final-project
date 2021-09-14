@@ -17,6 +17,16 @@ func NewUserRepository(db *gorm.DB) user.UserRepository {
 	}
 }
 
+func (repo *userRepository) buildParameter(ctx context.Context, param *user.UserParameter) (query *gorm.DB) {
+	query = repo.DB
+	if param.ID != 0 {
+		query = query.Where("id = ?", param.Email)
+	}
+	if param.Email != "" {
+		query = query.Where("email = ?", param.Email)
+	}
+	return query
+}
 func (repo *userRepository) Add(ctx context.Context, data *user.UserDomain) (res user.UserDomain, err error) {
 	model := fromDomain(data)
 	result := repo.DB.Create(&model)
@@ -26,18 +36,10 @@ func (repo *userRepository) Add(ctx context.Context, data *user.UserDomain) (res
 	return model.toDomain(), err
 }
 
-func (repo *userRepository) FindByEmail(ctx context.Context, param *user.UserParameter) (res user.UserDomain, err error) {
+func (repo *userRepository) FindOne(ctx context.Context, param *user.UserParameter) (res user.UserDomain, err error) {
+	query := repo.buildParameter(ctx, param)
 	model := Model{}
-	err = repo.DB.Where("email = ?", param.Email).First(&model).Error
-	if err != nil {
-		return res, err
-	}
-	return model.toDomain(), nil
-}
-
-func (repo *userRepository) FindByID(ctx context.Context, param *user.UserParameter) (res user.UserDomain, err error) {
-	model := Model{}
-	err = repo.DB.Where("id = ?", param.ID).First(&model).Error
+	err = query.First(&model).Error
 	if err != nil {
 		return res, err
 	}
