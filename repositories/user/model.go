@@ -4,7 +4,7 @@ import (
 	"keep-remind-app/businesses/user"
 	"keep-remind-app/repositories/label"
 	"keep-remind-app/repositories/note"
-	"keep-remind-app/repositories/telegram_user"
+	"keep-remind-app/repositories/telegramUser"
 
 	"gorm.io/gorm"
 )
@@ -16,9 +16,9 @@ type UserModel struct {
 	Name          string
 	Email         string
 	Password      string
-	Notes         []note.NoteModel                  `gorm:"foreignKey:UserID"`
-	Labels        []label.LabelModel                `gorm:"foreignKey:UserID"`
-	TelegramUsers []telegram_user.TelegramUserModel `gorm:"foreignKey:UserID"`
+	Notes         []note.NoteModel                 `gorm:"foreignKey:UserID"`
+	Labels        []label.LabelModel               `gorm:"foreignKey:UserID"`
+	TelegramUsers []telegramUser.TelegramUserModel `gorm:"foreignKey:UserID"`
 }
 
 func (model *UserModel) TableName() string {

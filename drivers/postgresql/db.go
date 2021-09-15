@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"keep-remind-app/repositories/label"
 	"keep-remind-app/repositories/note"
-	"keep-remind-app/repositories/telegram_user"
+	"keep-remind-app/repositories/telegramUser"
 	"keep-remind-app/repositories/user"
 	"log"
 
@@ -41,5 +41,5 @@ func (config *Config) InitDB() *gorm.DB {
 }
 
 func MigrateDB(db *gorm.DB) {
-	db.AutoMigrate(&user.UserModel{}, &note.NoteModel{}, &label.LabelModel{}, &telegram_user.TelegramUserModel{}) // migrate db
+	db.AutoMigrate(&user.UserModel{}, &note.NoteModel{}, &label.LabelModel{}, &telegramUser.TelegramUserModel{}) // migrate db
 }
