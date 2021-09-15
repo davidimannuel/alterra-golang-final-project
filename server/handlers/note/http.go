@@ -25,12 +25,12 @@ func NewNoteHandler(configs *configs.Configs, uc note.NoteUsecase) *NoteHandler 
 }
 
 func (h *NoteHandler) InitRoutes(router *echo.Group) {
-	router.GET("", h.Get)
+	router.GET("", h.FindAll)
 	router.POST("", h.Add)
 	router.POST("/image", h.AddWithImage)
 }
 
-func (h *NoteHandler) Get(c echo.Context) error {
+func (h *NoteHandler) FindAll(c echo.Context) error {
 	ctx := c.Get("ctx").(context.Context)
 	param := new(note.NoteParameter)
 	res, err := h.usecase.FindAll(ctx, param)

@@ -26,7 +26,7 @@ type LabelRepository interface {
 	FindOne(ctx context.Context, param *LabelParameter) (LabelDomain, error)
 	Add(ctx context.Context, data *LabelDomain) (int, error)
 	Edit(ctx context.Context, data *LabelDomain) error
-	Delete(ctx context.Context, data *LabelDomain) error
+	Delete(ctx context.Context, id int) error
 }
 
 type LabelUsecase interface {
@@ -35,5 +35,5 @@ type LabelUsecase interface {
 	FindOne(ctx context.Context, param *LabelParameter) (LabelDomain, error)
 	Add(ctx context.Context, data *LabelDomain) (int, error)
 	Edit(ctx context.Context, data *LabelDomain) error
-	Delete(ctx context.Context, data *LabelDomain) error
+	Delete(ctx context.Context, id int) error
 }

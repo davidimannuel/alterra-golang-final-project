@@ -11,6 +11,12 @@ type labelRepository struct {
 	DB *gorm.DB
 }
 
+func NewLabelRepository(db *gorm.DB) label.LabelRepository {
+	return &labelRepository{
+		DB: db,
+	}
+}
+
 func (repo *labelRepository) buildParameter(ctx context.Context, param *label.LabelParameter) (query *gorm.DB) {
 	query = repo.DB
 	if param.ID != 0 {
@@ -41,7 +47,7 @@ func (repo *labelRepository) FindAllPagination(ctx context.Context, param *label
 		return res, count, err
 	}
 	var totalData int64
-	if err = query.Count(&totalData).Error; err != nil {
+	if err = query.Model(&LabelModel{}).Count(&totalData).Error; err != nil {
 		return res, count, err
 	}
 	return toDomains(models), int(totalData), err
@@ -66,15 +72,14 @@ func (repo *labelRepository) Add(ctx context.Context, data *label.LabelDomain) (
 
 func (repo *labelRepository) Edit(ctx context.Context, data *label.LabelDomain) (err error) {
 	model := fromDomain(data)
-	if err = repo.DB.Save(&model).Error; err != nil {
+	if err = repo.DB.Model(&model).Updates(LabelModel{Name: model.Name}).Error; err != nil {
 		return err
 	}
 	return err
 }
 
-func (repo *labelRepository) Delete(ctx context.Context, data *label.LabelDomain) (err error) {
-	model := fromDomain(data)
-	if err = repo.DB.Delete(&model).Error; err != nil {
+func (repo *labelRepository) Delete(ctx context.Context, id int) (err error) {
+	if err = repo.DB.Delete(&LabelModel{}, id).Error; err != nil {
 		return err
 	}
 	return err

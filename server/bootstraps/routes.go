@@ -21,6 +21,9 @@ func (boot *Bootstrap) RegisterRoute() {
 	// users
 	users := apiV1.Group("/users", middleware.JWTWithConfig(boot.Configs.JWT.Init()), middlewares.ContextManagement(boot.Configs.AppTimeout))
 	boot.UserHandler.InitRoutes(users)
+	// labels
+	labels := apiV1.Group("/labels", middleware.JWTWithConfig(boot.Configs.JWT.Init()), middlewares.ContextManagement(boot.Configs.AppTimeout))
+	boot.LabelHandler.InitRoutes(labels)
 	// notes
 	notes := apiV1.Group("/notes", middleware.JWTWithConfig(boot.Configs.JWT.Init()), middlewares.ContextManagement(boot.Configs.AppTimeout))
 	boot.NoteHandler.InitRoutes(notes)

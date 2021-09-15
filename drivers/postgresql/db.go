@@ -7,9 +7,12 @@ import (
 	"keep-remind-app/repositories/telegramUser"
 	"keep-remind-app/repositories/user"
 	"log"
+	"os"
+	"time"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 type Config struct {
@@ -29,10 +32,21 @@ func (config *Config) InitDB() *gorm.DB {
 		config.DBPort,
 		config.DBName,
 	)
+	newLogger := logger.New(
+		log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
+		logger.Config{
+			SlowThreshold:             time.Second * 20, // Slow SQL threshold
+			LogLevel:                  logger.Silent,    // Log level
+			IgnoreRecordNotFoundError: true,             // Ignore ErrRecordNotFound error for logger
+			Colorful:                  true,             // Disable color
+		},
+	)
 	db, err := gorm.Open(postgres.New(
 		postgres.Config{
 			DSN: dsn,
-		}), &gorm.Config{})
+		}), &gorm.Config{
+		Logger: newLogger,
+	})
 	if err != nil {
 		log.Fatal("Error database connection")
 	}
