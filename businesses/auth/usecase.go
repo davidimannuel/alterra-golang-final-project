@@ -2,7 +2,6 @@ package auth
 
 import (
 	"context"
-	"keep-remind-app/businesses"
 	userDomain "keep-remind-app/businesses/user"
 	"keep-remind-app/helpers/encrypt"
 	"keep-remind-app/server/middlewares"
@@ -21,11 +20,7 @@ func NewAuthUsecase(userUc userDomain.UserUsecase, jwtAuth *middlewares.ConfigJW
 }
 
 func (uc *authUsecase) Register(ctx context.Context, data *AuthDomain) (jwtToken string, err error) {
-	user, _ := uc.userUc.FindOne(ctx, &userDomain.UserParameter{Email: data.Email})
-	if user.ID != 0 {
-		return "", businesses.ErrDuplicateData
-	}
-	user, err = uc.userUc.Add(ctx, &userDomain.UserDomain{
+	user, err := uc.userUc.Add(ctx, &userDomain.UserDomain{
 		Name:     data.Name,
 		Email:    data.Email,
 		Password: data.Password,

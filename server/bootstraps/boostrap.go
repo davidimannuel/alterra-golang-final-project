@@ -37,7 +37,7 @@ func Init(app *echo.Echo, configs configs.Configs) *Bootstrap {
 		App:         app,
 		Configs:     configs,
 		AuthHandler: _authHandler.NewAuthHandler(&configs, authUc),
-		UserHandler: _userHandler.NewUserHandler(&configs, userUc),
+		UserHandler: _userHandler.NewUserHandler(userUc),
 		NoteHandler: _noteHandler.NewNoteHandler(&configs, noteUc),
 	}
 	return &boot

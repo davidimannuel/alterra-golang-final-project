@@ -48,7 +48,15 @@ func (repo *userRepository) Add(ctx context.Context, data *user.UserDomain) (res
 
 func (repo *userRepository) Edit(ctx context.Context, data *user.UserDomain) (err error) {
 	model := fromDomain(data)
-	if err = repo.DB.Save(&model).Error; err != nil {
+	if err = repo.DB.Model(&model).Updates(UserModel{Email: model.Email, Name: model.Name}).Error; err != nil {
+		return err
+	}
+	return err
+}
+
+func (repo *userRepository) Delete(ctx context.Context, data *user.UserDomain) (err error) {
+	model := fromDomain(data)
+	if err = repo.DB.Delete(&model).Error; err != nil {
 		return err
 	}
 	return err

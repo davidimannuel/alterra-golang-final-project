@@ -25,7 +25,7 @@ func (repo *labelRepository) buildParameter(ctx context.Context, param *label.La
 	return query
 }
 
-func (repo labelRepository) FindOne(ctx context.Context, param *label.LabelParameter) (res label.LabelDomain, err error) {
+func (repo *labelRepository) FindOne(ctx context.Context, param *label.LabelParameter) (res label.LabelDomain, err error) {
 	query := repo.buildParameter(ctx, param)
 	model := LabelModel{}
 	if err = query.First(&model).Error; err != nil {
@@ -34,7 +34,7 @@ func (repo labelRepository) FindOne(ctx context.Context, param *label.LabelParam
 	return model.toDomain(), err
 }
 
-func (repo labelRepository) FindAllPagination(ctx context.Context, param *label.LabelParameter) (res []label.LabelDomain, count int, err error) {
+func (repo *labelRepository) FindAllPagination(ctx context.Context, param *label.LabelParameter) (res []label.LabelDomain, count int, err error) {
 	query := repo.buildParameter(ctx, param)
 	models := []LabelModel{}
 	if err = query.Offset(param.GetOffset()).Limit(param.GetPerPage()).Find(&models).Error; err != nil {
@@ -47,7 +47,7 @@ func (repo labelRepository) FindAllPagination(ctx context.Context, param *label.
 	return toDomains(models), int(totalData), err
 }
 
-func (repo labelRepository) FindAll(ctx context.Context, param *label.LabelParameter) (res []label.LabelDomain, err error) {
+func (repo *labelRepository) FindAll(ctx context.Context, param *label.LabelParameter) (res []label.LabelDomain, err error) {
 	query := repo.buildParameter(ctx, param)
 	models := []LabelModel{}
 	if err = query.Offset(param.GetOffset()).Limit(param.PerPage).Find(&models).Error; err != nil {
@@ -56,7 +56,7 @@ func (repo labelRepository) FindAll(ctx context.Context, param *label.LabelParam
 	return toDomains(models), err
 }
 
-func (repo labelRepository) Add(ctx context.Context, data *label.LabelDomain) (res int, err error) {
+func (repo *labelRepository) Add(ctx context.Context, data *label.LabelDomain) (res int, err error) {
 	model := fromDomain(data)
 	if err = repo.DB.Create(&model).Error; err != nil {
 		return 0, err
@@ -64,7 +64,7 @@ func (repo labelRepository) Add(ctx context.Context, data *label.LabelDomain) (r
 	return int(model.ID), err
 }
 
-func (repo labelRepository) Edit(ctx context.Context, data *label.LabelDomain) (err error) {
+func (repo *labelRepository) Edit(ctx context.Context, data *label.LabelDomain) (err error) {
 	model := fromDomain(data)
 	if err = repo.DB.Save(&model).Error; err != nil {
 		return err
@@ -72,7 +72,7 @@ func (repo labelRepository) Edit(ctx context.Context, data *label.LabelDomain) (
 	return err
 }
 
-func (repo labelRepository) Delete(ctx context.Context, data *label.LabelDomain) (err error) {
+func (repo *labelRepository) Delete(ctx context.Context, data *label.LabelDomain) (err error) {
 	model := fromDomain(data)
 	if err = repo.DB.Delete(&model).Error; err != nil {
 		return err

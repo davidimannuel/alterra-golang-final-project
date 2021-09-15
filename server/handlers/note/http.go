@@ -50,7 +50,7 @@ func (h *NoteHandler) Add(c echo.Context) error {
 	if err != nil {
 		return handlers.SendBadResponse(c, err, http.StatusBadRequest)
 	}
-	return handlers.SendSucessResponse(c, "success", nil)
+	return handlers.SendSucessResponse(c, "ok", nil)
 }
 
 func (h *NoteHandler) AddWithImage(c echo.Context) error {
