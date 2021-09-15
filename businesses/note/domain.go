@@ -34,13 +34,11 @@ type NoteRepository interface {
 }
 
 type NoteUsecase interface {
-	// FindAllPagination(ctx context.Context, param *NoteParameter) ([]NoteDomain, int, error)
+	FindAllPagination(ctx context.Context, param *NoteParameter) ([]NoteDomain, businesses.Pagination, error)
 	FindAll(ctx context.Context, param *NoteParameter) ([]NoteDomain, error)
-	FindByID(ctx context.Context, param *NoteParameter) (NoteDomain, error)
-	// FindByTitle(ctx context.Context, param *NoteParameter) (NoteDomain, error)
-	// FindByTitleOrNote(ctx context.Context, param *NoteParameter) (NoteDomain, error)
-	Add(ctx context.Context, data *NoteDomain) (NoteDomain, error)
-	AddWithImageBytes(ctx context.Context, title string, imageBytes []byte) (NoteDomain, error)
-	// Edit(ctx context.Context, data *NoteDomain) (NoteDomain, error)
-	// Delete(ctx context.Context, id int) (NoteDomain, error)
+	FindOne(ctx context.Context, param *NoteParameter) (NoteDomain, error)
+	Add(ctx context.Context, data *NoteDomain) (int, error)
+	AddWithImageBytes(ctx context.Context, title string, imageBytes []byte) (int, error)
+	Edit(ctx context.Context, data *NoteDomain) error
+	Delete(ctx context.Context, id int) error
 }

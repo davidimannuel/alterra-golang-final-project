@@ -25,6 +25,15 @@ type LabelRepository interface {
 	FindAll(ctx context.Context, param *LabelParameter) ([]LabelDomain, error)
 	FindOne(ctx context.Context, param *LabelParameter) (LabelDomain, error)
 	Add(ctx context.Context, data *LabelDomain) (int, error)
-	Edit(ctx context.Context, data *LabelDomain) (int, error)
-	Delete(ctx context.Context, id int) (int, error)
+	Edit(ctx context.Context, data *LabelDomain) error
+	Delete(ctx context.Context, data *LabelDomain) error
+}
+
+type LabelUsecase interface {
+	FindAllPagination(ctx context.Context, param *LabelParameter) ([]LabelDomain, businesses.Pagination, error)
+	FindAll(ctx context.Context, param *LabelParameter) ([]LabelDomain, error)
+	FindOne(ctx context.Context, param *LabelParameter) (LabelDomain, error)
+	Add(ctx context.Context, data *LabelDomain) (int, error)
+	Edit(ctx context.Context, data *LabelDomain) error
+	Delete(ctx context.Context, data *LabelDomain) error
 }

@@ -7,32 +7,56 @@ import (
 )
 
 type noteUsecase struct {
-	repository NoteRepository
-	ocrUsecase ocr.OCRUsecase
+	noteRepository NoteRepository
+	ocrUsecase     ocr.OCRUsecase
 }
 
-func NewNoteUsecase(repository NoteRepository, ocrUsecase ocr.OCRUsecase) NoteUsecase {
+func NewNoteUsecase(noteRepository NoteRepository, ocrUsecase ocr.OCRUsecase) NoteUsecase {
 	return &noteUsecase{
-		repository: repository,
-		ocrUsecase: ocrUsecase,
+		noteRepository: noteRepository,
+		ocrUsecase:     ocrUsecase,
 	}
 }
 
-func (uc noteUsecase) Add(ctx context.Context, data *NoteDomain) (res NoteDomain, err error) {
-	data.UserID = ctx.Value("user_id").(int)
-	res.ID, err = uc.repository.Add(ctx, data)
+func (uc noteUsecase) FindAllPagination(ctx context.Context, param *NoteParameter) (res []NoteDomain, p businesses.Pagination, err error) {
+	res, count, err := uc.noteRepository.FindAllPagination(ctx, param)
 	if err != nil {
-		return NoteDomain{}, err
+		return res, param.GetPageInfo(count), err
+	}
+	return
+}
+
+func (uc noteUsecase) FindAll(ctx context.Context, param *NoteParameter) (res []NoteDomain, err error) {
+	res, err = uc.noteRepository.FindAll(ctx, param)
+	if err != nil {
+		return res, err
 	}
 	return res, err
 }
 
-func (uc noteUsecase) AddWithImageBytes(ctx context.Context, title string, imageBytes []byte) (res NoteDomain, err error) {
+func (uc noteUsecase) FindOne(ctx context.Context, param *NoteParameter) (res NoteDomain, err error) {
+	res, err = uc.noteRepository.FindOne(ctx, param)
+	if err != nil {
+		return
+	}
+	return
+}
+
+func (uc noteUsecase) Add(ctx context.Context, data *NoteDomain) (res int, err error) {
+	data.UserID = ctx.Value("user_id").(int)
+	res, err = uc.noteRepository.Add(ctx, data)
+	if err != nil {
+		return
+	}
+	return res, err
+}
+
+func (uc noteUsecase) AddWithImageBytes(ctx context.Context, title string, imageBytes []byte) (res int, err error) {
 	text, err := uc.ocrUsecase.GetImageTextFromImageBytes(ctx, imageBytes)
 	if err != nil {
 		return res, err
 	}
-	res.ID, err = uc.repository.Add(ctx, &NoteDomain{
+	res, err = uc.noteRepository.Add(ctx, &NoteDomain{
 		UserID: ctx.Value("user_id").(int),
 		Title:  title,
 		Note:   text,
@@ -43,14 +67,9 @@ func (uc noteUsecase) AddWithImageBytes(ctx context.Context, title string, image
 	return res, err
 }
 
-func (uc noteUsecase) FindAll(ctx context.Context, param *NoteParameter) (res []NoteDomain, err error) {
-	res, err = uc.repository.FindAll(ctx, param)
-	if err != nil {
-		return res, businesses.ErrInternalServer
-	}
-	return res, err
+func (uc noteUsecase) Edit(ctx context.Context, data *NoteDomain) error {
+	panic("impl")
 }
-
-func (uc noteUsecase) FindByID(ctx context.Context, param *NoteParameter) (res NoteDomain, err error) {
-	panic("implement me")
+func (uc noteUsecase) Delete(ctx context.Context, id int) error {
+	panic("impl")
 }

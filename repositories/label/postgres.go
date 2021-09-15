@@ -37,7 +37,7 @@ func (repo labelRepository) FindOne(ctx context.Context, param *label.LabelParam
 func (repo labelRepository) FindAllPagination(ctx context.Context, param *label.LabelParameter) (res []label.LabelDomain, count int, err error) {
 	query := repo.buildParameter(ctx, param)
 	models := []LabelModel{}
-	if err = query.Offset(param.GetOffset()).Limit(param.PerPage).Find(&models).Error; err != nil {
+	if err = query.Offset(param.GetOffset()).Limit(param.GetPerPage()).Find(&models).Error; err != nil {
 		return res, count, err
 	}
 	var totalData int64
