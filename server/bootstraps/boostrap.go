@@ -37,7 +37,7 @@ func Init(app *echo.Echo, configs configs.Configs) *Bootstrap {
 	ocrUc := _ocrUc.NewOCRUsecase()
 	authUc := _authUc.NewAuthUsecase(userUc, &configs.JWT)
 	labelUc := _labelUc.NewLabelUsecase(labelRepo)
-	noteUc := _noteUc.NewNoteUsecase(noteRepo, ocrUc)
+	noteUc := _noteUc.NewNoteUsecase(noteRepo, ocrUc, labelUc)
 	// boot
 	boot := Bootstrap{
 		App:          app,

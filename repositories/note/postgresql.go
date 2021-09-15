@@ -41,7 +41,7 @@ func (repo *noteRepository) FindAllPagination(ctx context.Context, param *note.N
 		return res, total, err
 	}
 	var totalData int64
-	err = repo.DB.Count(&totalData).Error
+	err = repo.DB.Model(&NoteModel{}).Count(&totalData).Error
 	if err != nil {
 		return res, total, err
 	}
@@ -50,7 +50,7 @@ func (repo *noteRepository) FindAllPagination(ctx context.Context, param *note.N
 func (repo *noteRepository) FindAll(ctx context.Context, param *note.NoteParameter) (res []note.NoteDomain, err error) {
 	query := repo.buildParameter(ctx, param)
 	models := []NoteModel{}
-	if err = query.Offset(param.GetOffset()).Limit(param.PerPage).Find(&models).Error; err != nil {
+	if err = query.Find(&models).Error; err != nil {
 		return res, err
 	}
 	return toDomains(models), err
@@ -66,6 +66,10 @@ func (repo *noteRepository) FindOne(ctx context.Context, param *note.NoteParamet
 
 func (repo *noteRepository) Add(ctx context.Context, data *note.NoteDomain) (res int, err error) {
 	model := fromDomain(data)
+	userId := ctx.Value("user_id").(int)
+	for i := range model.Labels {
+		model.Labels[i].UserID = uint(userId)
+	}
 	if err = repo.DB.Create(&model).Error; err != nil {
 		return res, err
 	}

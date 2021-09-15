@@ -16,7 +16,7 @@ type NoteModel struct {
 	Title      string
 	Note       string
 	ReminderAt *time.Time
-	Labels     []*label.LabelModel `gorm:"many2many:note_labels;"`
+	Labels     []label.LabelModel `gorm:"many2many:note_labels;"`
 }
 
 func (model *NoteModel) TableName() string {
@@ -24,6 +24,7 @@ func (model *NoteModel) TableName() string {
 }
 
 func fromDomain(domain *note.NoteDomain) *NoteModel {
+	domainLabels := fromLabelsDomain(domain.Labels)
 	return &NoteModel{
 		Model: gorm.Model{
 			ID:        uint(domain.ID),
@@ -34,7 +35,25 @@ func fromDomain(domain *note.NoteDomain) *NoteModel {
 		Title:      domain.Title,
 		Note:       domain.Note,
 		ReminderAt: domain.ReminderAt,
+		Labels:     domainLabels,
 	}
+}
+
+func fromLabelDomain(labelDomain note.LabelDomain) *label.LabelModel {
+	return &label.LabelModel{
+		Model: gorm.Model{
+			ID: uint(labelDomain.ID),
+		},
+		UserID: uint(labelDomain.UserID),
+		Name:   labelDomain.Name,
+	}
+}
+
+func fromLabelsDomain(labelsDomain []note.LabelDomain) (res []label.LabelModel) {
+	for i := range labelsDomain {
+		res = append(res, *fromLabelDomain(labelsDomain[i]))
+	}
+	return res
 }
 
 func (model *NoteModel) toDomain() note.NoteDomain {

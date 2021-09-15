@@ -11,9 +11,16 @@ type NoteDomain struct {
 	UserID     int
 	Title      string
 	Note       string
+	Labels     []LabelDomain
 	ReminderAt *time.Time
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
+}
+
+type LabelDomain struct {
+	ID     int
+	UserID int
+	Name   string
 }
 
 type NoteParameter struct {
