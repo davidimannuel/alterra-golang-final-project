@@ -3,6 +3,7 @@ package label_test
 import (
 	"context"
 	"errors"
+	"keep-remind-app/businesses"
 	"keep-remind-app/businesses/label"
 	_labelMock "keep-remind-app/businesses/label/mocks"
 	"testing"
@@ -70,7 +71,7 @@ func TestFindAllPagination(t *testing.T) {
 
 	t.Run("Find All Pagination | Valid", func(t *testing.T) {
 		labelRepository.On("FindAllPagination", mock.AnythingOfType("context.Context"), mock.AnythingOfType("&label.LabelParameter{}")).
-			Return(labelData, nil).Once()
+			Return(labelData, nil, businesses.Pagination{Page: 1, PerPage: 10, TotalData: 20}).Once()
 
 		result, pagination, err := labelUsecase.FindAllPagination(context.Background(), &label.LabelParameter{})
 		assert.Nil(t, err)
@@ -80,7 +81,7 @@ func TestFindAllPagination(t *testing.T) {
 
 	t.Run("Find All | InValid", func(t *testing.T) {
 		labelRepository.On("FindAllPagination", mock.AnythingOfType("context.Context"), mock.AnythingOfType("&label.LabelParameter{}")).
-			Return(labelData, errCase).Once()
+			Return(labelData, errCase, businesses.Pagination{Page: 1, PerPage: 10, TotalData: 20}).Once()
 
 		_, _, err := labelUsecase.FindAllPagination(context.Background(), &label.LabelParameter{})
 		assert.NotNil(t, err)
@@ -123,7 +124,7 @@ func TestAdd(t *testing.T) {
 	}
 
 	t.Run("Test Add | Valid", func(t *testing.T) {
-		labelRepository.On("TestAdd", mock.AnythingOfType("context.Context"), mock.AnythingOfType("labelData")).
+		labelRepository.On("Add", mock.AnythingOfType("context.Context"), mock.AnythingOfType("labelData")).
 			Return(labelData, nil).Once()
 
 		result, err := labelUsecase.Add(context.Background(), &labelData)
@@ -132,7 +133,7 @@ func TestAdd(t *testing.T) {
 	})
 
 	t.Run("Test Add | InValid", func(t *testing.T) {
-		labelRepository.On("TestAdd", mock.AnythingOfType("context.Context"), mock.AnythingOfType("labelData")).
+		labelRepository.On("Add", mock.AnythingOfType("context.Context"), mock.AnythingOfType("labelData")).
 			Return(labelData, errCase).Once()
 
 		_, err := labelUsecase.Add(context.Background(), &labelData)
@@ -148,16 +149,16 @@ func TestEdit(t *testing.T) {
 	}
 
 	t.Run("Test Edit | Valid", func(t *testing.T) {
-		labelRepository.On("TestEdit", mock.AnythingOfType("context.Context"), mock.AnythingOfType("labelData")).
-			Return(labelData, nil).Once()
+		labelRepository.On("Edit", mock.AnythingOfType("context.Context"), mock.AnythingOfType("labelData")).
+			Return(nil).Once()
 
 		err := labelUsecase.Edit(context.Background(), &labelData)
 		assert.Nil(t, err)
 	})
 
 	t.Run("Test Edit | InValid", func(t *testing.T) {
-		labelRepository.On("TestEdit", mock.AnythingOfType("context.Context"), mock.AnythingOfType("labelData")).
-			Return(labelData, errCase).Once()
+		labelRepository.On("Edit", mock.AnythingOfType("context.Context"), mock.AnythingOfType("labelData")).
+			Return(errCase).Once()
 
 		err := labelUsecase.Edit(context.Background(), &labelData)
 		assert.NotNil(t, err)
@@ -172,16 +173,16 @@ func TestDelete(t *testing.T) {
 	}
 
 	t.Run("Test Delete | Valid", func(t *testing.T) {
-		labelRepository.On("TestDelete", mock.AnythingOfType("context.Context"), mock.AnythingOfType("labelData")).
-			Return(labelData, nil).Once()
+		labelRepository.On("Delete", mock.AnythingOfType("context.Context"), mock.AnythingOfType("labelData")).
+			Return(nil).Once()
 
 		err := labelUsecase.Delete(context.Background(), labelData.ID)
 		assert.Nil(t, err)
 	})
 
 	t.Run("Test Delete | InValid", func(t *testing.T) {
-		labelRepository.On("TestDelete", mock.AnythingOfType("context.Context"), mock.AnythingOfType("labelData")).
-			Return(labelData, errCase).Once()
+		labelRepository.On("Delete", mock.AnythingOfType("context.Context"), mock.AnythingOfType("labelData")).
+			Return(errCase).Once()
 
 		err := labelUsecase.Delete(context.Background(), labelData.ID)
 		assert.NotNil(t, err)
