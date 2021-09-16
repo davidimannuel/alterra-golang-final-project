@@ -22,3 +22,7 @@ func (repo *redisUsecase) Set(ctx context.Context, key string, value interface{}
 func (repo *redisUsecase) Get(ctx context.Context, key string) (string, error) {
 	return repo.redisRepository.Get(ctx, key)
 }
+
+func (repo *redisUsecase) Del(ctx context.Context, key string) error {
+	return repo.redisRepository.Del(ctx, key)
+}

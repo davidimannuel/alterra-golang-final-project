@@ -6,10 +6,6 @@ import (
 	"time"
 )
 
-var (
-	redisKeyActivatedTelegram = "activatedTelegram-"
-)
-
 type TelegramUserDomain struct {
 	ID        int
 	UserID    uint
@@ -40,7 +36,7 @@ type TelegramUserUsecase interface {
 	FindAll(ctx context.Context, param *TelegramUserParameter) ([]TelegramUserDomain, error)
 	FindOne(ctx context.Context, param *TelegramUserParameter) (TelegramUserDomain, error)
 	Add(ctx context.Context, data *TelegramUserDomain) (int, error)
-	Activated(ctx context.Context, data *TelegramUserDomain) error
+	Activated(ctx context.Context, username string, otp string) error
 	GenerateActivatedOTP(ctx context.Context, id int) (otp string, err error)
 	Delete(ctx context.Context, data *TelegramUserDomain) error
 }

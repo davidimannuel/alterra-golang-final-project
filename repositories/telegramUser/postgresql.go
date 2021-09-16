@@ -77,8 +77,7 @@ func (repo telegramUserRepository) Add(ctx context.Context, data *telegramuser.T
 }
 
 func (repo telegramUserRepository) EditStatus(ctx context.Context, data *telegramuser.TelegramUserDomain) (err error) {
-	model := fromDomain(data)
-	if err = repo.DB.Save(&model).Error; err != nil {
+	if err = repo.DB.Model(&TelegramUserModel{}).Where("id = ?", data.ID).Update("is_active", data.IsActive).Error; err != nil {
 		return err
 	}
 	return err

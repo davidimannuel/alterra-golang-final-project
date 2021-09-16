@@ -2,11 +2,21 @@ package telegramUser
 
 import (
 	"context"
+	"fmt"
 	"keep-remind-app/businesses"
 	redisDomain "keep-remind-app/businesses/redis"
 	"keep-remind-app/helpers/str"
 	"strconv"
 	"time"
+)
+
+var (
+	RedisKeyRegisteredTelegram = "registeredTelegram-"
+	LastChatTelegram           = "lastChatTelegram-"
+	LastActionTelegram         = "lastActionTelegram-"
+	RedisKeyActivatedTelegram  = "activatedTelegram-"
+
+	LatestActionOtp = "otp"
 )
 
 type telegramUserUsecase struct {
@@ -25,9 +35,16 @@ func (uc *telegramUserUsecase) validate(ctx context.Context, data *TelegramUserD
 	if ctx.Value("user_id") == 0 {
 		return ErrInvalidUser
 	}
+	telUser := TelegramUserDomain{}
+	if data.ID != 0 {
+		telUser, err = uc.telegramUserRepository.FindOne(ctx, &TelegramUserParameter{Username: data.Username})
+		if err != nil {
+			return err
+		}
+	}
 	data.UserID = uint(ctx.Value("user_id").(int))
-	if data.ID != 0 && data.Username != "" {
-		exist, _ := uc.telegramUserRepository.FindOne(ctx, &TelegramUserParameter{Username: data.Username, UserID: data.UserID})
+	if telUser.Username != data.Username && data.Username != "" {
+		exist, _ := uc.telegramUserRepository.FindOne(ctx, &TelegramUserParameter{Username: data.Username})
 		if exist.ID != 0 {
 			return ErrUsernameExist
 		}
@@ -79,19 +96,35 @@ func (uc *telegramUserUsecase) GenerateActivatedOTP(ctx context.Context, id int)
 		return "", ErrDataNotFound
 	}
 	otp = str.RandomNumberString(6)
-	key := redisKeyActivatedTelegram + strconv.Itoa(ctx.Value("user_id").(int)) + otp
+	key := RedisKeyActivatedTelegram + exist.Username + otp
 	err = uc.redisUsecase.Set(ctx, key, exist.ID, time.Minute*5)
+	if err != nil {
+		return "", businesses.ErrInternalServer
+	}
+	err = uc.redisUsecase.Set(ctx, LastActionTelegram+exist.Username, LatestActionOtp, 0)
 	return otp, err
 }
 
-func (uc *telegramUserUsecase) Activated(ctx context.Context, data *TelegramUserDomain) error {
-	exist, _ := uc.telegramUserRepository.FindOne(ctx, &TelegramUserParameter{Username: data.Username, UserID: data.UserID})
+func (uc *telegramUserUsecase) Activated(ctx context.Context, username string, otp string) error {
+	fmt.Println(RedisKeyActivatedTelegram + username + otp)
+	res, err := uc.redisUsecase.Get(ctx, RedisKeyActivatedTelegram+username+otp)
+	if err != nil {
+		return ErrDataNotFound
+	}
+	id, _ := strconv.Atoi(res)
+	param := new(TelegramUserParameter)
+	param.Status = "true"
+	exist, _ := uc.telegramUserRepository.FindOne(ctx, param)
+	fmt.Println(exist)
 	if exist.ID != 0 {
 		exist.IsActive = false
 		return uc.telegramUserRepository.EditStatus(ctx, &exist)
 	}
-	data.IsActive = true
-	return uc.telegramUserRepository.EditStatus(ctx, data)
+	err = uc.telegramUserRepository.EditStatus(ctx, &TelegramUserDomain{ID: id, IsActive: true})
+	if err != nil {
+		return businesses.ErrInternalServer
+	}
+	return uc.redisUsecase.Del(ctx, RedisKeyActivatedTelegram+username+otp)
 }
 
 func (uc *telegramUserUsecase) Delete(ctx context.Context, data *TelegramUserDomain) error {

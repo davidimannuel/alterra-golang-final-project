@@ -25,3 +25,9 @@ func (repo *redisRepository) Set(ctx context.Context, key string, value interfac
 func (repo *redisRepository) Get(ctx context.Context, key string) (string, error) {
 	return repo.Client.Get(ctx, key).Result()
 }
+
+func (repo *redisRepository) Del(ctx context.Context, key string) error {
+	keys := []string{key}
+	return repo.Client.Del(ctx, keys...).Err()
+
+}
