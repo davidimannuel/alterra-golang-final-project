@@ -63,7 +63,7 @@ func (uc *TeleBotUsecase) CommandManagement(update telebot.UpdatesResponse) {
 	} else if user == "" {
 		uc.bot.SendMessage(telebot.SendMessageConfig{
 			ChatID: update.Message.Chat.ID,
-			Text:   "please login",
+			Text:   "please loging",
 		})
 	} else if msg == "/notes" {
 		notes, _ := uc.noteUsecase.FindAll(context.Background(), &noteDomain.NoteParameter{UserID: userID})
