@@ -2,7 +2,10 @@ package telebot
 
 import (
 	"context"
+	noteDomain "keep-remind-app/businesses/note"
 	redisDomain "keep-remind-app/businesses/redis"
+	"strconv"
+
 	"keep-remind-app/businesses/telegramUser"
 	"keep-remind-app/drivers/ocr"
 	"keep-remind-app/drivers/telebot"
@@ -16,6 +19,7 @@ type TeleBotUsecase struct {
 	res          telegramUser.TelegramUserUsecase
 	telegramUser telegramUser.TelegramUserUsecase
 	redisUsecase redisDomain.RedisUsecase
+	noteUsecase  noteDomain.NoteUsecase
 }
 
 var (
@@ -30,11 +34,12 @@ var (
 	}
 )
 
-func NewTelebotUseCase(bot *telebot.BotAPI, redisUsecase redisDomain.RedisUsecase, telegramUser telegramUser.TelegramUserUsecase) *TeleBotUsecase {
+func NewTelebotUseCase(bot *telebot.BotAPI, redisUsecase redisDomain.RedisUsecase, telegramUser telegramUser.TelegramUserUsecase, noteUsecase noteDomain.NoteUsecase) *TeleBotUsecase {
 	return &TeleBotUsecase{
 		bot:          bot,
 		telegramUser: telegramUser,
 		redisUsecase: redisUsecase,
+		noteUsecase:  noteUsecase,
 	}
 }
 
@@ -42,6 +47,8 @@ func (uc *TeleBotUsecase) CommandManagement(update telebot.UpdatesResponse) {
 	msg := update.Message.Text
 	username := update.Message.From.Username
 	latestAction, _ := uc.redisUsecase.Get(context.Background(), telegramUser.LastActionTelegram+username)
+	user, _ := uc.redisUsecase.Get(context.Background(), telegramUser.RedisKeyTelegramUser+username)
+	userID, _ := strconv.Atoi(user)
 	if latestAction == telegramUser.LatestActionOtp {
 		err := uc.telegramUser.Activated(context.Background(), username, msg)
 		log.Println(err)
@@ -53,6 +60,21 @@ func (uc *TeleBotUsecase) CommandManagement(update telebot.UpdatesResponse) {
 			ChatID: update.Message.Chat.ID,
 			Text:   message,
 		})
+	} else if user == "" {
+		uc.bot.SendMessage(telebot.SendMessageConfig{
+			ChatID: update.Message.Chat.ID,
+			Text:   "please login",
+		})
+	} else if msg == "/notes" {
+		notes, _ := uc.noteUsecase.FindAll(context.Background(), &noteDomain.NoteParameter{UserID: userID})
+		for _, v := range notes {
+			uc.bot.SendMessage(telebot.SendMessageConfig{
+				ChatID: update.Message.Chat.ID,
+				Text:   v.Note,
+			})
+		}
+	} else if len(update.Message.Photo) > 0 {
+		uc.SaveNoteFromImage(update)
 	} else {
 		message, exist := responseCommands[msg]
 		if !exist {

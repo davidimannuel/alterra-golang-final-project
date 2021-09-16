@@ -2,7 +2,7 @@ package telegramUser
 
 import (
 	"context"
-	"fmt"
+	"errors"
 	"keep-remind-app/businesses"
 	redisDomain "keep-remind-app/businesses/redis"
 	"keep-remind-app/helpers/str"
@@ -15,6 +15,7 @@ var (
 	LastChatTelegram           = "lastChatTelegram-"
 	LastActionTelegram         = "lastActionTelegram-"
 	RedisKeyActivatedTelegram  = "activatedTelegram-"
+	RedisKeyTelegramUser       = "telegramUser-"
 
 	LatestActionOtp = "otp"
 )
@@ -32,23 +33,17 @@ func NewTelegramUserUsecase(telegramUserRepository TelegramUserRepository, redis
 }
 
 func (uc *telegramUserUsecase) validate(ctx context.Context, data *TelegramUserDomain) (err error) {
-	if ctx.Value("user_id") == 0 {
-		return ErrInvalidUser
+	userID := uint(ctx.Value("user_id").(int))
+	exist, _ := uc.telegramUserRepository.FindOne(ctx, &TelegramUserParameter{UserID: userID})
+	if exist.ID != 0 {
+		return errors.New("User only have 1 account")
 	}
-	telUser := TelegramUserDomain{}
-	if data.ID != 0 {
-		telUser, err = uc.telegramUserRepository.FindOne(ctx, &TelegramUserParameter{Username: data.Username})
-		if err != nil {
-			return err
-		}
+	data.UserID = userID
+	exist, _ = uc.telegramUserRepository.FindOne(ctx, &TelegramUserParameter{Username: data.Username})
+	if exist.ID != 0 {
+		return ErrUsernameExist
 	}
-	data.UserID = uint(ctx.Value("user_id").(int))
-	if telUser.Username != data.Username && data.Username != "" {
-		exist, _ := uc.telegramUserRepository.FindOne(ctx, &TelegramUserParameter{Username: data.Username})
-		if exist.ID != 0 {
-			return ErrUsernameExist
-		}
-	}
+
 	return
 }
 
@@ -106,25 +101,28 @@ func (uc *telegramUserUsecase) GenerateActivatedOTP(ctx context.Context, id int)
 }
 
 func (uc *telegramUserUsecase) Activated(ctx context.Context, username string, otp string) error {
-	fmt.Println(RedisKeyActivatedTelegram + username + otp)
 	res, err := uc.redisUsecase.Get(ctx, RedisKeyActivatedTelegram+username+otp)
 	if err != nil {
 		return ErrDataNotFound
 	}
 	id, _ := strconv.Atoi(res)
 	param := new(TelegramUserParameter)
-	param.Status = "true"
-	exist, _ := uc.telegramUserRepository.FindOne(ctx, param)
-	fmt.Println(exist)
-	if exist.ID != 0 {
-		exist.IsActive = false
-		return uc.telegramUserRepository.EditStatus(ctx, &exist)
-	}
-	err = uc.telegramUserRepository.EditStatus(ctx, &TelegramUserDomain{ID: id, IsActive: true})
+	param.Username = username
+	param.ID = id
+	exist, err := uc.telegramUserRepository.FindOne(ctx, param)
 	if err != nil {
 		return businesses.ErrInternalServer
 	}
-	return uc.redisUsecase.Del(ctx, RedisKeyActivatedTelegram+username+otp)
+	// set userID telegram
+	err = uc.redisUsecase.Set(ctx, RedisKeyTelegramUser+username, exist.UserID, 0)
+	if err != nil {
+		return businesses.ErrInternalServer
+	}
+	err = uc.redisUsecase.Del(ctx, RedisKeyActivatedTelegram+username+otp)
+	if err != nil {
+		return businesses.ErrInternalServer
+	}
+	return uc.redisUsecase.Del(ctx, LastActionTelegram+username)
 }
 
 func (uc *telegramUserUsecase) Delete(ctx context.Context, data *TelegramUserDomain) error {
