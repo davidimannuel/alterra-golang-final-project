@@ -1,4 +1,4 @@
-package telegramuser
+package telegramUser
 
 import (
 	"context"

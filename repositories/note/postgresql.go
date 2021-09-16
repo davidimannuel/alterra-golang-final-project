@@ -37,7 +37,7 @@ func (repo *noteRepository) buildParameter(ctx context.Context, param *note.Note
 func (repo *noteRepository) FindAllPagination(ctx context.Context, param *note.NoteParameter) (res []note.NoteDomain, total int, err error) {
 	query := repo.buildParameter(ctx, param)
 	models := []NoteModel{}
-	if err = query.Offset(param.GetOffset()).Limit(param.GetPerPage()).Find(&models).Error; err != nil {
+	if err = query.Offset(param.GetOffset()).Limit(param.GetPerPage()).Preload("Labels").Find(&models).Error; err != nil {
 		return res, total, err
 	}
 	var totalData int64
@@ -50,7 +50,7 @@ func (repo *noteRepository) FindAllPagination(ctx context.Context, param *note.N
 func (repo *noteRepository) FindAll(ctx context.Context, param *note.NoteParameter) (res []note.NoteDomain, err error) {
 	query := repo.buildParameter(ctx, param)
 	models := []NoteModel{}
-	if err = query.Find(&models).Error; err != nil {
+	if err = query.Preload("Labels").Find(&models).Error; err != nil {
 		return res, err
 	}
 	return toDomains(models), err

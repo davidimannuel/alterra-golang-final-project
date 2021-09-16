@@ -65,7 +65,9 @@ func (model *NoteModel) toDomain() note.NoteDomain {
 		ReminderAt: model.ReminderAt,
 		CreatedAt:  model.CreatedAt,
 		UpdatedAt:  model.UpdatedAt,
+		Labels:     toLabelsDomain(model.Labels),
 	}
+
 }
 
 func toDomains(models []NoteModel) (res []note.NoteDomain) {
@@ -73,4 +75,15 @@ func toDomains(models []NoteModel) (res []note.NoteDomain) {
 		res = append(res, models[i].toDomain())
 	}
 	return res
+}
+
+func toLabelsDomain(models []label.LabelModel) (domains []note.LabelDomain) {
+	for i := range models {
+		domains = append(domains, note.LabelDomain{
+			ID:     int(models[i].ID),
+			UserID: int(models[i].UserID),
+			Name:   models[i].Name,
+		})
+	}
+	return domains
 }
