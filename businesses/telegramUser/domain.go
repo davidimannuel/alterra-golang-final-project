@@ -6,6 +6,10 @@ import (
 	"time"
 )
 
+var (
+	redisKeyActivatedTelegram = "activatedTelegram-"
+)
+
 type TelegramUserDomain struct {
 	ID        int
 	UserID    uint
@@ -18,6 +22,7 @@ type TelegramUserDomain struct {
 type TelegramUserParameter struct {
 	UserID   uint
 	Username string
+	Status   string
 	businesses.BaseParameter
 }
 
@@ -26,7 +31,7 @@ type TelegramUserRepository interface {
 	FindAll(ctx context.Context, param *TelegramUserParameter) ([]TelegramUserDomain, error)
 	FindOne(ctx context.Context, param *TelegramUserParameter) (TelegramUserDomain, error)
 	Add(ctx context.Context, data *TelegramUserDomain) (int, error)
-	Edit(ctx context.Context, data *TelegramUserDomain) error
+	EditStatus(ctx context.Context, data *TelegramUserDomain) error
 	Delete(ctx context.Context, data *TelegramUserDomain) error
 }
 
@@ -35,6 +40,7 @@ type TelegramUserUsecase interface {
 	FindAll(ctx context.Context, param *TelegramUserParameter) ([]TelegramUserDomain, error)
 	FindOne(ctx context.Context, param *TelegramUserParameter) (TelegramUserDomain, error)
 	Add(ctx context.Context, data *TelegramUserDomain) (int, error)
-	Edit(ctx context.Context, data *TelegramUserDomain) error
+	Activated(ctx context.Context, data *TelegramUserDomain) error
+	GenerateActivatedOTP(ctx context.Context, id int) (otp string, err error)
 	Delete(ctx context.Context, data *TelegramUserDomain) error
 }

@@ -55,10 +55,11 @@ func (repo *noteRepository) FindAll(ctx context.Context, param *note.NoteParamet
 	}
 	return toDomains(models), err
 }
+
 func (repo *noteRepository) FindOne(ctx context.Context, param *note.NoteParameter) (res note.NoteDomain, err error) {
 	query := repo.buildParameter(ctx, param)
 	model := NoteModel{}
-	if err = query.Offset(param.GetOffset()).Limit(param.PerPage).Find(&model).Error; err != nil {
+	if err = query.Debug().First(&model).Error; err != nil {
 		return res, err
 	}
 	return model.toDomain(), err

@@ -2,13 +2,21 @@ package telegramUser
 
 import (
 	"context"
+	"keep-remind-app/businesses/telegramUser"
 	telegramuser "keep-remind-app/businesses/telegramUser"
+	"strconv"
 
 	"gorm.io/gorm"
 )
 
 type telegramUserRepository struct {
 	DB *gorm.DB
+}
+
+func NewTelegramUserRepository(db *gorm.DB) telegramUser.TelegramUserRepository {
+	return &telegramUserRepository{
+		DB: db,
+	}
 }
 
 func (repo *telegramUserRepository) buildParameter(ctx context.Context, param *telegramuser.TelegramUserParameter) (query *gorm.DB) {
@@ -22,16 +30,11 @@ func (repo *telegramUserRepository) buildParameter(ctx context.Context, param *t
 	if param.Username != "" {
 		query = query.Where("username = ?", param.Username)
 	}
-	return query
-}
-
-func (repo telegramUserRepository) FindOne(ctx context.Context, param *telegramuser.TelegramUserParameter) (res telegramuser.TelegramUserDomain, err error) {
-	query := repo.buildParameter(ctx, param)
-	model := TelegramUserModel{}
-	if err = query.First(&model).Error; err != nil {
-		return res, err
+	if param.Status != "" {
+		status, _ := strconv.ParseBool(param.Status)
+		query = query.Where("status = ?", status)
 	}
-	return model.toDomain(), err
+	return query
 }
 
 func (repo telegramUserRepository) FindAllPagination(ctx context.Context, param *telegramuser.TelegramUserParameter) (res []telegramuser.TelegramUserDomain, count int, err error) {
@@ -56,6 +59,15 @@ func (repo telegramUserRepository) FindAll(ctx context.Context, param *telegramu
 	return toDomains(models), err
 }
 
+func (repo telegramUserRepository) FindOne(ctx context.Context, param *telegramuser.TelegramUserParameter) (res telegramuser.TelegramUserDomain, err error) {
+	query := repo.buildParameter(ctx, param)
+	model := TelegramUserModel{}
+	if err = query.First(&model).Error; err != nil {
+		return res, err
+	}
+	return model.toDomain(), err
+}
+
 func (repo telegramUserRepository) Add(ctx context.Context, data *telegramuser.TelegramUserDomain) (res int, err error) {
 	model := fromDomain(data)
 	if err = repo.DB.Create(&model).Error; err != nil {
@@ -64,7 +76,7 @@ func (repo telegramUserRepository) Add(ctx context.Context, data *telegramuser.T
 	return int(model.ID), err
 }
 
-func (repo telegramUserRepository) Edit(ctx context.Context, data *telegramuser.TelegramUserDomain) (err error) {
+func (repo telegramUserRepository) EditStatus(ctx context.Context, data *telegramuser.TelegramUserDomain) (err error) {
 	model := fromDomain(data)
 	if err = repo.DB.Save(&model).Error; err != nil {
 		return err

@@ -21,6 +21,9 @@ func (boot *Bootstrap) RegisterRoute() {
 	// users
 	users := apiV1.Group("/users", middleware.JWTWithConfig(boot.Configs.JWT.Init()), middlewares.ContextManagement(boot.Configs.AppTimeout))
 	boot.UserHandler.InitRoutes(users)
+	// telegramUsers
+	telegramUsers := apiV1.Group("/telegramUsers", middleware.JWTWithConfig(boot.Configs.JWT.Init()), middlewares.ContextManagement(boot.Configs.AppTimeout))
+	boot.TelegramUserhandler.InitRoutes(telegramUsers)
 	// labels
 	labels := apiV1.Group("/labels", middleware.JWTWithConfig(boot.Configs.JWT.Init()), middlewares.ContextManagement(boot.Configs.AppTimeout))
 	boot.LabelHandler.InitRoutes(labels)

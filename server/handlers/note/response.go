@@ -16,9 +16,8 @@ type NoteResponse struct {
 }
 
 type LabelResponse struct {
-	ID     int
-	UserID int
-	Name   string
+	ID   int    `json:"id"`
+	Name string `json:"name"`
 }
 
 func FromDomain(domain *note.NoteDomain) NoteResponse {
@@ -43,9 +42,8 @@ func FromDomains(domains []note.NoteDomain) (res []NoteResponse) {
 func FromLabelsDomais(domains []note.LabelDomain) (res []LabelResponse) {
 	for i := range domains {
 		res = append(res, LabelResponse{
-			ID:     domains[i].ID,
-			UserID: domains[i].UserID,
-			Name:   domains[i].Name,
+			ID:   domains[i].ID,
+			Name: domains[i].Name,
 		})
 	}
 	return res

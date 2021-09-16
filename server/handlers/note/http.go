@@ -5,27 +5,26 @@ import (
 	"context"
 	"io"
 	"keep-remind-app/businesses/note"
-	"keep-remind-app/configs"
 	"keep-remind-app/server/handlers"
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo/v4"
 )
 
 type NoteHandler struct {
-	configs *configs.Configs
 	usecase note.NoteUsecase
 }
 
-func NewNoteHandler(configs *configs.Configs, uc note.NoteUsecase) *NoteHandler {
+func NewNoteHandler(uc note.NoteUsecase) *NoteHandler {
 	return &NoteHandler{
-		configs: configs,
 		usecase: uc,
 	}
 }
 
 func (h *NoteHandler) InitRoutes(router *echo.Group) {
-	router.GET("", h.FindAll)
+	router.GET("/select", h.FindAll)
+	router.GET("/", h.FindAll)
 	router.POST("", h.Add)
 	router.POST("/image", h.AddWithImage)
 }
@@ -38,6 +37,18 @@ func (h *NoteHandler) FindAll(c echo.Context) error {
 		return handlers.SendBadResponse(c, err, http.StatusInternalServerError)
 	}
 	return handlers.SendSucessResponse(c, FromDomains(res), nil)
+}
+
+func (h *NoteHandler) FindAllPagination(c echo.Context) error {
+	ctx := c.Get("ctx").(context.Context)
+	param := new(note.NoteParameter)
+	param.PerPage, _ = strconv.Atoi(c.QueryParam("per_page"))
+	param.Page, _ = strconv.Atoi(c.QueryParam("page"))
+	res, meta, err := h.usecase.FindAllPagination(ctx, param)
+	if err != nil {
+		return handlers.SendBadResponse(c, err, http.StatusInternalServerError)
+	}
+	return handlers.SendSucessResponse(c, FromDomains(res), handlers.PageInfo(meta))
 }
 
 func (h *NoteHandler) Add(c echo.Context) error {

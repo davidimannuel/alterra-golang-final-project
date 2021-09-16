@@ -3,7 +3,6 @@ package auth
 import (
 	"context"
 	"keep-remind-app/businesses/auth"
-	"keep-remind-app/configs"
 	"keep-remind-app/server/handlers"
 	"net/http"
 
@@ -11,13 +10,11 @@ import (
 )
 
 type AuthHandler struct {
-	configs *configs.Configs
 	usecase auth.AuthUsecase
 }
 
-func NewAuthHandler(configs *configs.Configs, uc auth.AuthUsecase) *AuthHandler {
+func NewAuthHandler(uc auth.AuthUsecase) *AuthHandler {
 	return &AuthHandler{
-		configs: configs,
 		usecase: uc,
 	}
 }

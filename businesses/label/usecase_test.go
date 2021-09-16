@@ -21,6 +21,7 @@ var (
 
 func TestMain(m *testing.M) {
 	labelUsecase = label.NewLabelUsecase(&labelRepository)
+	m.Run()
 }
 
 func TestFindAll(t *testing.T) {

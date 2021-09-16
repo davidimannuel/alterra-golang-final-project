@@ -8,6 +8,7 @@ import (
 	"log"
 	"time"
 
+	"github.com/go-redis/redis/v8"
 	"github.com/spf13/viper"
 	"gorm.io/gorm"
 )
@@ -16,6 +17,7 @@ type Configs struct {
 	AppHost    string
 	AppTimeout time.Duration
 	DB         *gorm.DB
+	Redis      *redis.Client
 	JWT        middlewares.ConfigJWT
 	TeleBOT    *telebot.BotAPI
 }
@@ -46,6 +48,12 @@ func LoadConfigs() (res Configs, err error) {
 	}
 	configs.DB = db.InitDB()
 	postgresql.MigrateDB(configs.DB)
+
+	configs.Redis = redis.NewClient(&redis.Options{
+		Addr:     viper.GetString("REDIS_HOST"),
+		Password: viper.GetString("REDIS_PASSWORD"),
+		DB:       viper.GetInt("REDIS_DB"),
+	})
 
 	configs.JWT = middlewares.ConfigJWT{
 		SecretJWT:       viper.GetString("JWT_SECRET"),

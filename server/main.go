@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log"
 
 	"keep-remind-app/configs"
@@ -16,6 +17,7 @@ func main() {
 	if err != nil {
 		log.Fatal("Error load config file")
 	}
+	log.Println("Redis", configs.Redis.Ping(context.Background()))
 	//init router
 	e := echo.New()
 	e.Use(middleware.Logger())
