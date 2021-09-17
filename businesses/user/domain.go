@@ -30,12 +30,12 @@ type UserRepository interface {
 	FindOne(ctx context.Context, param *UserParameter) (UserDomain, error)
 	Add(ctx context.Context, data *UserDomain) (UserDomain, error)
 	Edit(ctx context.Context, data *UserDomain) error
-	Delete(ctx context.Context, data *UserDomain) error
+	Delete(ctx context.Context, id int) error
 }
 
 type UserUsecase interface {
 	FindOne(ctx context.Context, param *UserParameter) (UserDomain, error)
 	Add(ctx context.Context, data *UserDomain) (UserDomain, error)
 	Edit(ctx context.Context, data *UserDomain) error
-	Delete(ctx context.Context, data *UserDomain) error
+	Delete(ctx context.Context, id int) error
 }

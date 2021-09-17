@@ -54,9 +54,8 @@ func (repo *userRepository) Edit(ctx context.Context, data *user.UserDomain) (er
 	return err
 }
 
-func (repo *userRepository) Delete(ctx context.Context, data *user.UserDomain) (err error) {
-	model := fromDomain(data)
-	if err = repo.DB.Delete(&model).Error; err != nil {
+func (repo *userRepository) Delete(ctx context.Context, id int) (err error) {
+	if err = repo.DB.Delete(&UserModel{}, id).Error; err != nil {
 		return err
 	}
 	return err

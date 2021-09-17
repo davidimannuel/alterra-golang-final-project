@@ -47,10 +47,8 @@ func (uc *userUsecase) Add(ctx context.Context, data *UserDomain) (res UserDomai
 	if err != nil {
 		return res, err
 	}
-	data.Password, err = encrypt.HashPassword(data.Password)
-	if err != nil {
-		return res, businesses.ErrInternalServer
-	}
+	data.Password, _ = encrypt.HashPassword(data.Password)
+
 	res, err = uc.userRepository.Add(ctx, data)
 	if err != nil {
 		return res, businesses.ErrInternalServer
@@ -66,6 +64,6 @@ func (uc *userUsecase) Edit(ctx context.Context, data *UserDomain) error {
 	return uc.userRepository.Edit(ctx, data)
 }
 
-func (uc *userUsecase) Delete(ctx context.Context, data *UserDomain) error {
-	return uc.userRepository.Delete(ctx, data)
+func (uc *userUsecase) Delete(ctx context.Context, id int) error {
+	return uc.userRepository.Delete(ctx, id)
 }
