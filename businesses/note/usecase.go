@@ -2,6 +2,7 @@ package note
 
 import (
 	"context"
+	"errors"
 	"keep-remind-app/businesses"
 	"keep-remind-app/businesses/label"
 	"keep-remind-app/businesses/ocr"
@@ -23,6 +24,9 @@ func NewNoteUsecase(noteRepository NoteRepository, ocrUsecase ocr.OCRUsecase, la
 
 func (uc *noteUsecase) validate(ctx context.Context, data *NoteDomain) (err error) {
 	userID := ctx.Value("user_id").(int)
+	if userID == 0 {
+		return errors.New("Invalid User")
+	}
 	data.UserID = userID
 	if len(data.Labels) > 0 {
 		for i := range data.Labels {
@@ -87,9 +91,13 @@ func (uc *noteUsecase) AddWithImageBytes(ctx context.Context, title string, imag
 	return res, err
 }
 
-func (uc *noteUsecase) Edit(ctx context.Context, data *NoteDomain) error {
-	panic("impl")
+func (uc *noteUsecase) Edit(ctx context.Context, data *NoteDomain) (err error) {
+	err = uc.validate(ctx, data)
+	if err != nil {
+		return
+	}
+	return uc.noteRepository.Edit(ctx, data)
 }
 func (uc *noteUsecase) Delete(ctx context.Context, id int) error {
-	panic("impl")
+	return uc.noteRepository.Delete(ctx, id)
 }

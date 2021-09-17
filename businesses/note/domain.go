@@ -37,7 +37,7 @@ type NoteRepository interface {
 	FindOne(ctx context.Context, param *NoteParameter) (NoteDomain, error)
 	Add(ctx context.Context, data *NoteDomain) (int, error)
 	Edit(ctx context.Context, data *NoteDomain) error
-	Delete(ctx context.Context, data *NoteDomain) error
+	Delete(ctx context.Context, id int) error
 }
 
 type NoteUsecase interface {

@@ -84,9 +84,8 @@ func (repo *noteRepository) Edit(ctx context.Context, data *note.NoteDomain) (er
 	}
 	return err
 }
-func (repo *noteRepository) Delete(ctx context.Context, data *note.NoteDomain) (err error) {
-	model := fromDomain(data)
-	if err = repo.DB.Delete(&model).Error; err != nil {
+func (repo *noteRepository) Delete(ctx context.Context, id int) (err error) {
+	if err = repo.DB.Delete(&NoteModel{}, id).Error; err != nil {
 		return err
 	}
 	return err
