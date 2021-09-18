@@ -1,49 +1,51 @@
 package note
 
-import "context"
+import (
+	"context"
+	"keep-remind-app/businesses"
+	"time"
+)
 
-type Entity struct {
-	Id         int     `json:"id"`
-	Title      string  `json:"title"`
-	Note       string  `json:"note"`
-	ReminderAt string  `json:"reminder_at"`
-	CreatedAt  string  `json:"created_at"`
-	UpdatedAt  string  `json:"updated_at"`
-	DeletedAt  *string `json:"deleted_at"`
+type NoteDomain struct {
+	ID         int
+	UserID     int
+	Title      string
+	Note       string
+	Labels     []LabelDomain
+	ReminderAt *time.Time
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
 }
 
-type Parameter struct {
-	Id         int     `json:"id"`
-	Title      string  `json:"title"`
-	Note       string  `json:"note"`
-	ReminderAt string  `json:"reminder_at"`
-	CreatedAt  string  `json:"created_at"`
-	UpdatedAt  string  `json:"updated_at"`
-	DeletedAt  *string `json:"deleted_at"`
-	OrderBy    string  `json:"order_by"`
-	Sort       string  `json:"sort"`
-	Offset     int     `json:"offset"`
-	Limit      int     `json:"limit"`
+type LabelDomain struct {
+	ID     int
+	UserID int
+	Name   string
 }
 
-type Repository interface {
-	FindAll(ctx context.Context, parameter Parameter) (data []Entity, count int, err error)
-	SelectAll(ctx context.Context, parameter Parameter) (data []Entity, err error)
-	FindByID(ctx context.Context, parameter Parameter) (data Entity, err error)
-	FindByTitle(ctx context.Context, parameter Parameter) (data Entity, err error)
-	FindByTitleOrNote(ctx context.Context, parameter Parameter) (data Entity, err error)
-	Create(ctx context.Context, data *Entity) (lastInsertId int, err error)
-	Update(ctx context.Context, data *Entity) (lastUpdateId int, err error)
-	Delete(ctx context.Context, id int) (lastUpdateId int, err error)
+type NoteParameter struct {
+	UserID     int
+	Title      string
+	Note       string
+	ReminderAt string
+	businesses.BaseParameter
 }
 
-type Usecase interface {
-	FindAll(ctx context.Context, parameter Parameter) (data []Entity, count int, err error)
-	SelectAll(ctx context.Context, parameter Parameter) (data []Entity, err error)
-	FindByID(ctx context.Context, parameter Parameter) (data Entity, err error)
-	FindByTitle(ctx context.Context, parameter Parameter) (data Entity, err error)
-	FindByTitleOrNote(ctx context.Context, parameter Parameter) (data Entity, err error)
-	Create(ctx context.Context, data *Entity) (lastInsertId int, err error)
-	Update(ctx context.Context, data *Entity) (lastUpdateId int, err error)
-	Delete(ctx context.Context, id int) (lastUpdateId int, err error)
+type NoteRepository interface {
+	FindAllPagination(ctx context.Context, param *NoteParameter) ([]NoteDomain, int, error)
+	FindAll(ctx context.Context, param *NoteParameter) ([]NoteDomain, error)
+	FindOne(ctx context.Context, param *NoteParameter) (NoteDomain, error)
+	Add(ctx context.Context, data *NoteDomain) (int, error)
+	Edit(ctx context.Context, data *NoteDomain) error
+	Delete(ctx context.Context, id int) error
+}
+
+type NoteUsecase interface {
+	FindAllPagination(ctx context.Context, param *NoteParameter) ([]NoteDomain, businesses.Pagination, error)
+	FindAll(ctx context.Context, param *NoteParameter) ([]NoteDomain, error)
+	FindOne(ctx context.Context, param *NoteParameter) (NoteDomain, error)
+	Add(ctx context.Context, data *NoteDomain) (int, error)
+	AddWithImageBytes(ctx context.Context, title string, imageBytes []byte) (int, error)
+	Edit(ctx context.Context, data *NoteDomain) error
+	Delete(ctx context.Context, id int) error
 }

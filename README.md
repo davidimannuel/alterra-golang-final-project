@@ -1,23 +1,26 @@
+alterra golang final project
+
+App name : Keep Remind !!!
 ### structure folder
 ```
 .
 ├── README.md
-├── business => businnes layer
-│   ├── label
-│   │   └── domain.go
-│   ├── note
-│   │   ├── domain.go
-│   │   ├── repository
-│   │   │   ├── orm.go
-│   │   │   └── postgresql.go
-│   │   └── usecase.go
-│   └── user
-├── driver => driver layer
-│   ├── database
-│   │   ├── orm
-│   │   │   └── orm.go
-│   │   └── postgresql
-│   └── thirdparties
+├── businesses
+│   ├── context.go
+│   └── note
+│       ├── domain.go
+│       └── usecase.go
+├── configs
+│   ├── config.go
+│   └── constants.go
+├── drivers
+│   ├── postgresql
+│   │   └── db.go
+│   └── repositories
+│       ├── label
+│       └── note
+│           ├── model.go
+│           └── postgresql.go
 ├── files
 │   ├── CleanArchitecture.jpeg
 │   ├── db.sql
@@ -25,14 +28,26 @@
 │   └── note.txt
 ├── go.mod
 ├── go.sum
-├── helper
-├── pkg => thirdparties / libbrary folder
+├── helpers
+│   └── str
+│       └── time.go
 ├── server
-│   ├── bootstrap
-│   │   └── routers.go
+│   ├── bootstraps
+│   │   ├── app.go
+│   │   ├── routes
+│   │   │   └── v1
+│   │   │       └── note.go
+│   │   └── routes.go
 │   ├── handlers
+│   │   ├── handler.go
+│   │   └── note
+│   │       ├── http.go
+│   │       ├── request
+│   │       │   └── json.go
+│   │       └── response
+│   │           └── json.go
 │   ├── main.go
-│   └── middleware
+│   └── middlewares
 │       └── jwt.go
 └── swagger
     ├── swagger.yaml
