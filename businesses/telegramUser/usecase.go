@@ -86,7 +86,7 @@ func (uc *telegramUserUsecase) Add(ctx context.Context, data *TelegramUserDomain
 func (uc *telegramUserUsecase) GenerateActivatedOTP(ctx context.Context, id int) (otp string, err error) {
 	param := &TelegramUserParameter{}
 	param.ID = id
-	exist, err := uc.telegramUserRepository.FindOne(ctx, &TelegramUserParameter{})
+	exist, err := uc.telegramUserRepository.FindOne(ctx, param)
 	if err != nil {
 		return "", ErrDataNotFound
 	}
